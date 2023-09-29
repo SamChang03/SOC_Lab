@@ -1,2 +1,5 @@
-# SOC_Lab
-This is a repository about all Lab in NTHU SOC project
+# NTHU SOC_Lab
+This repository contains the related work for the NTHU 11210EE525100 Topic on SOC Design
+
+# Contributer
+# 張育碩
