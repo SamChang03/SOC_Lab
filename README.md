@@ -7,6 +7,6 @@ This repository contains the related work for the NTHU 11210EE525100 Topic on SO
 ### Students:
 - [張育碩](https://github.com/SamChang03)
 - 王奕程
-- 張育嘉
+- [張育嘉](https://github.com/greenturtlefrank)
 
 # Toolchain and Prerequisites
