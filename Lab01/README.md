@@ -10,6 +10,6 @@ we downloaded the three files from the github link above
 Then we run the simulation to get the simulation result to check the HLS code meet our expectatoin  
 ![vitis_simulation](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/vitis_simulation.png)  
   
-We move on to run synthesis and cosimulation to ensure that we can get the correct result in the hardware
+We move on to run synthesis and cosimulation to ensure that we can get the correct result in the hardware  
 ![synthesis_result](Lab01/synthesis_result.png)  
 ![cosimulation_result](Lab01/cosimulation_result.png)  
