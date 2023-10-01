@@ -1,6 +1,6 @@
 # Lab 01 PYNQ-Z2
 We will get more familiar to the tool that we will use to develop our SOC in this Lab.  
-### resourse: https://github.com/bol-edu/course-lab_1
+### Resourse: https://github.com/bol-edu/course-lab_1
 ## Vitis HLS
 - Download the three files from the github link above  
 1.  Multiplication.cpp : Baic mutiplication C code
