@@ -2,15 +2,15 @@
 We will get more familiar to the tool that we will use to develop our SOC in this Lab.  
 ### resourse: https://github.com/bol-edu/course-lab_1
 ## Vitis HLS
-- We downloaded the three files from the github link above  
+- Download the three files from the github link above  
 1.  Multiplication.cpp : Baic mutiplication C code
 2.  Multiplication.h : Head file
 3.  MultipTester.cpp : Testbench for the code
 
-- Then we run the simulation to get the simulation result to check the HLS code meet our expectatoin
+- Run the simulation to get the simulation result to check the HLS code meet our expectatoin
 ![vitis_simulation](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/vitis_simulation.png)  
       
-- We move on to run synthesis and cosimulation to ensure that we can get the correct result in the hardware
+- Run synthesis and cosimulation to ensure that we can get the correct result in the hardware
 - Note that before we run the cosimulation, we need to comment out the pragma inculd ap_strl_none. Then, run the synthesis and the cosimulaion again and passing the cosimulation
 ![synthesis_result](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/synthesis_result.png)  
 ![cosimulation_result](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/cosimulation_result.png)  
