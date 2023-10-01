@@ -1,5 +1,5 @@
 # Lab 01 PYNQ-Z2
-This lab gives us brief introduction of the enviroment that we delelope our SOC
+We will get familiar to the tool that we will use to develop our SOC
 
 ---
 ### resourse: https://github.com/bol-edu/course-lab_1
