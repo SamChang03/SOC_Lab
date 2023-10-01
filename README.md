@@ -10,3 +10,6 @@ This repository contains the related work for the NTHU 11210EE525100 Topic on SO
 - [張育嘉](https://github.com/greenturtlefrank)
 
 # Toolchain and Prerequisites
+- Environment: Ubuntu 20.04+ on Oracle VM VirtualBox 6.1.42
+- Applications: Xilinx Vitis 2022.1 (Vitis_hls / Vivado), GTKWave v3.3.103
+- FPGA boards: Xilinx PYNQ-Z2 / ZYSOC KV260 / BASYS3
