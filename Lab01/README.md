@@ -8,4 +8,4 @@ we downloaded the three files from the github link above
 3.  MultipTester.cpp : Testbench for the code
 
 Then we run the simulation to get the result  
-! （Lab01/vitis_simulation.png）
+! [vitis_simulation]（Lab01/vitis_simulation.png）
