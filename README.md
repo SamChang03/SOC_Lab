@@ -13,3 +13,5 @@ This repository contains the related work for the NTHU 11210EE525100 Topic on SO
 - Environment: Ubuntu 20.04+ on Oracle VM VirtualBox 6.1.42
 - Applications: Xilinx Vitis 2022.1 (Vitis_hls / Vivado), GTKWave v3.3.103
 - FPGA boards: Xilinx PYNQ-Z2 / ZYSOC KV260 / BASYS3
+
+# Lab01 (https://github.com/SamChang03/SOC_Lab/tree/main/Lab01)
