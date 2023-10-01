@@ -8,4 +8,5 @@ we downloaded the three files from the github link above
 3.  MultipTester.cpp : Testbench for the code
 
 Then we run the simulation to get the result  
+
 ! [image](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/vitis_simulation.png)
