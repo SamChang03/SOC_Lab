@@ -15,6 +15,6 @@ This repository contains the related work for the NTHU 11210EE525100 Topic on SO
 - FPGA boards: Xilinx PYNQ-Z2 / ZYSOC KV260 / BASYS3
 
 # Lab01 PYNQ-Z2
-[Lab01](https://github.com/SamChang03/SOC_Lab/tree/main/Lab01)  
+- [Lab01](https://github.com/SamChang03/SOC_Lab/tree/main/Lab01)  
 - Main purpose: Get more falimiar to the develoment enviroment
 - Tools: Vitis_HLS, Vivado, MobaXterm, Jupyter Notebook
