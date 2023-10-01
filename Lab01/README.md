@@ -8,4 +8,4 @@ we downloaded the three files from the github link above
 3.  MultipTester.cpp : Testbench for the code
 
 Then we run the simulation to get the result  
-! /home/samchang/圖片/vitis_simulation.png
+! Lab01/vitis_simulation.png
