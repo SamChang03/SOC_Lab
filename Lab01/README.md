@@ -11,5 +11,10 @@ We will get familiar to the tool that we will use to develop our SOC in this Lab
 ![vitis_simulation](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/vitis_simulation.png)  
       
 - We move on to run synthesis and cosimulation to ensure that we can get the correct result in the hardware
+- Note that before we run the cosimulation, we need to comment out the pragma inculd ap_strl_none. Then, run the synthesis and the cosimulaion again and passing the cosimulation
 ![synthesis_result](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/synthesis_result.png)  
 ![cosimulation_result](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/cosimulation_result.png)  
+
+- After we pass the cosimulation, exporting RTL IP with Vitis_HLS.
+- Then open the Vivado
+## Vivado
