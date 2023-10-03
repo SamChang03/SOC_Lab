@@ -43,5 +43,7 @@ We will get more familiar to the tool that we will use to develop our SOC in thi
 - Upload this two files and a Python code(from resource) to the context
 ![Jupyter Notebook](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/jupyter.png)
 
-
+- Run the Python code to get the final result
+![result_1](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/python%20code%201.png)
+![result_2](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/python%20code%202.png)
 
