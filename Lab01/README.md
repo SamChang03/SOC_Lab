@@ -32,5 +32,16 @@ We will get more familiar to the tool that we will use to develop our SOC in thi
 - Find out **[project_name].bit** and **[project_name].hwh** and save the files in other directory to prepare for uploading the Bistreem on the FPGA board  
 
 ## MobaXterm and Online FPGA
-![MobaXterm](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/rent%20FPGA%20board.png)
+- Open MobaXterm and set some SSH parameters to connect(rent) the Online FPGA
+![MobaXterm](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/rent%20FPGA%20board.png)  
+
+- Then copy the jupyter web ip port from MobaXterm and enter the password on the Internet
+- So, we can open a Jupyter Notebook website
+
+## Jupyter Notebook  
+- Following the steps above, we can approach Jupyter Notebook
+- Upload this two files and a Python code(from resource) to the context
+![Jupyter Notebook](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/jupyter.png)
+
+
 
