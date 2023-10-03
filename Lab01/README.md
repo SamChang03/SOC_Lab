@@ -8,6 +8,7 @@ We will get more familiar to the tool that we will use to develop our SOC in thi
 3.  MultipTester.cpp : Testbench for the code
 
 - First open the Vitis and upload the HLS code/testbench in the Vitis HLS
+![HLS_code](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/HLS%20code.png)
 
 - Run the simulation to get the simulation result and check the HLS code meet our expectatoin
 ![vitis_simulation](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/vitis_simulation.png)  
@@ -20,3 +21,6 @@ We will get more familiar to the tool that we will use to develop our SOC in thi
 - After we pass the cosimulation, exporting RTL IP with Vitis_HLS.
 - Then open the Vivado
 ## Vivado
+- Open the Vivado, create a project and construct a block diagram
+- PS: The folling sreenshot is from the handout in above URL
+![block diagram](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/block%20diagram.png)
