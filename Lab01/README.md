@@ -22,7 +22,7 @@ We will get more familiar to the tool that we will use to develop our SOC in thi
 - Then open the Vivado
 ## Vivado
 - Open the Vivado; create a project
-![vivado](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/open%20vivado.png)
+![vivado](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/rent%20FPGA%20board.png)
 
 - Construct a block diagram. Then, ajust some parameters
 - PS: The folling sreenshot is from the handout in above URL
