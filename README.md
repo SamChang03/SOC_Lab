@@ -11,8 +11,9 @@ This repository contains the personal/related work for the NTHU 11210EE525100 To
 
 # Toolchain and Prerequisites
 - Environment: Ubuntu 20.04
-- Applications: Xilinx Vitis 2022.1 (Vitis_hls / Vivado), GTKWave v3.3.103
+- Applications: Xilinx Vitis 2022.1 (Vitis_HLS / Vivado), GTKWave v3.3.103
 - FPGA boards: Xilinx PYNQ-Z2 / ZYSOC KV260 / BASYS3
+- Remote network tool: MobaXterm V23.2
 
 # Lab01 PYNQ-Z2
 - [Lab01](https://github.com/SamChang03/SOC_Lab/tree/main/Lab01)  
