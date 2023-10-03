@@ -21,6 +21,9 @@ We will get more familiar to the tool that we will use to develop our SOC in thi
 - After we pass the cosimulation, exporting RTL IP with Vitis_HLS.
 - Then open the Vivado
 ## Vivado
-- Open the Vivado, create a project and construct a block diagram
+- Open the Vivado, create a project and construct a block diagram. Then, ajust some parameters
 - PS: The folling sreenshot is from the handout in above URL
 ![block diagram](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/block%20diagram.png)
+
+- Then we generate Bitstream, which will include the Synthesis and Implemetation processes
+- Find out ==[project_name].bit== and ==[project_name].hwh== and save the files in other directory to prepare for the Demo on the FPGA
