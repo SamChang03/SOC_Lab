@@ -32,5 +32,5 @@ We will get more familiar to the tool that we will use to develop our SOC in thi
 - Find out **[project_name].bit** and **[project_name].hwh** and save the files in other directory to prepare for uploading the Bistreem on the FPGA board  
 
 ## MobaXterm and Online FPGA
-![MobaXterm](Lab01/rent FPGA board.png)
+![MobaXterm](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/rent FPGA board.png)
 
