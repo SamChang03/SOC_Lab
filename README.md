@@ -6,7 +6,7 @@ This repository contains the personal/related work for the NTHU 11210EE525100 To
 - 賴瑾（Jiin Lai）
 ### Students:
 - [張育碩](https://github.com/SamChang03)
-- 王奕程
+- [王奕程](https://github.com/pineapplecapoo)
 - [張育嘉](https://github.com/greenturtlefrank)
 
 # Toolchain and Prerequisites
