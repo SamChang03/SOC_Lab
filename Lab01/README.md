@@ -8,7 +8,7 @@ We will get more familiar with tools that we will use to develop our SOC in this
 3.  MultipTester.cpp : Testbench for the code
 
 - First open Vitis_HLS and create a projrct
-- Upload the HLS code/testbench in Vitis_HLS
+- Upload the HLS code/testbench in Vitis_HLS  
 ![HLS_code](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/HLS%20code.png)
 
 - Run the simulation to get the simulation result and check the HLS code meet our expectatoin
