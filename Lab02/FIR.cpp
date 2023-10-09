@@ -1,4 +1,4 @@
-include "fir.h"
+include "FIR.h"
 
 void fir_n11_maxi(volatile int32_t* pn32HPInput, volatile int32_t* pn32HPOutput, int32_t an32Coef[MAP_ALIGN_4INT], reg32_t regXferLeng)
 {
