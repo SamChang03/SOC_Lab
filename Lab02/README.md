@@ -13,18 +13,15 @@ This lab is similar to Lab01. The board we use is KV260 and the cpp example is a
 - Upload the HLS code/testbench in Vitis_HLS  
 ![HLS_code](https://github.com/SamChang03/SOC_Lab/blob/main/Lab02/Screen%20shot/vitis_hls.png)
       
-- Run synthesis and cosimulation to ensure that we can get the correct result in the hardware
-- Note that before we run the cosimulation, we need to comment out the pragma inculde ap_strl_none. Then, run synthesis and cosimulaion again to pass the cosimulation
+- Note that although there is KV260's Board file in VITIS HLS but we still get error when we run C simulation and C synthesis
 ![synthesis_result](https://github.com/SamChang03/SOC_Lab/blob/main/Lab02/Screen%20shot/hls_sythsis.png)  
-
-
-- After we pass the cosimulation, exporting RTL IP with Vitis_HLS.
+- Exporting RTL IP 
 - Then open the Vivado
 ## Vivado
 - Open Vivado; create a project
 ![vivado](https://github.com/SamChang03/SOC_Lab/blob/main/Lab02/Screen%20shot/vivado.png)
 
-- Construct a block diagram. Then, ajust some parameters
+- Construct a block diagram. Adjust some parameters, run block automation and onnection automation *2
 ![block diagram](https://github.com/SamChang03/SOC_Lab/blob/main/Lab02/Screen%20shot/block%20diagram.png)
 
 - Then we generate Bitstream, which will include the Synthesis and Implemetation processes
