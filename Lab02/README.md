@@ -5,9 +5,9 @@ This lab is similat to Lab01 but the board we use is KV260. And, we construct th
 # AXI-Master Interface
 ## Vitis HLS
 - Download three files from the github link above  
-1.  Multiplication.cpp : Baic mutiplication C code
-2.  Multiplication.h : Head file
-3.  MultipTester.cpp : Testbench for the code
+1.  FIR.cpp : Baic mutiplication C code
+2.  FIR.h : Head file
+3. FIR.cpp : Testbench for the code
 
 - First open Vitis_HLS and create a projrct
 - Upload the HLS code/testbench in Vitis_HLS  
