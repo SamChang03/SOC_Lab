@@ -7,7 +7,7 @@ This lab is similat to Lab01 but the board we use is KV260.
 - Download three files from the github link above  
 1.  FIR.cpp : Baic mutiplication C code
 2.  FIR.h : Head file
-3. FIR.cpp : Testbench for the code
+3.  FIR.cpp : Testbench for the code
 
 - First open Vitis_HLS and create a projrct
 - Upload the HLS code/testbench in Vitis_HLS  
@@ -33,7 +33,7 @@ This lab is similat to Lab01 but the board we use is KV260.
 
 ## MobaXterm and Online FPGA
 - Open MobaXterm and set some SSH parameters to connect(rent) the Online FPGA
-![MobaXterm]()  
+![MobaXterm](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/rent%20FPGA%20board.png)  
 
 - Then copy the jupyter web ip port from MobaXterm and enter the password on the Internet
 - So, we can open a Jupyter Notebook website
