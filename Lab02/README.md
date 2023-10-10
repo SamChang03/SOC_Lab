@@ -23,12 +23,12 @@ This lab is similar to Lab01. The board we use is KV260 and the cpp example is a
 
 - Construct a block diagram. Adjust some parameters
 - NOTE: there is something different from Lab01. We need to open HP port to select AXI HP0 FPD
-![HP port]()
+![HP port](https://github.com/SamChang03/SOC_Lab/blob/main/Lab02/Screen%20shot/HP%20port.png)
 - Run block automation and onnection automation *2
 ![block diagram](https://github.com/SamChang03/SOC_Lab/blob/main/Lab02/Screen%20shot/block%20diagram.png)
 
 - We can double check by using address editor
-![Address editor]()
+![Address editor](https://github.com/SamChang03/SOC_Lab/blob/main/Lab02/Screen%20shot/Address%20editor.png)
 
 - Wrap the block diagram
 - Then we generate Bitstream, which will include the Synthesis and Implemetation processes
@@ -62,6 +62,7 @@ This topic is almost the same as above, so I just note something different in th
 3. Allocate two DMA to read one or write one.
 4. If the DMA is the read one, we enalbe Read Channel.(the same way for write one)
 5. Rename the read one to axi_dma_in_0, while read one to axi_dma_out_0(we may use it in python)
+![Xilinx DMA IP component](https://github.com/SamChang03/SOC_Lab/blob/main/Lab02/Screen%20shot/Xilinx%20DMA%20IP%20component.png)
 
 #### Build the block diagram
 1. Click run connection automation*2
@@ -69,7 +70,8 @@ This topic is almost the same as above, so I just note something different in th
 3. Connect pstrminput in FIR_N11_STRM to axi_dma_in_0 in M_AXIS_MM2S
 4. Connect pstrmoutput in FIR_N11_STRM to axi_dma_out_0 in S_AXIS_S2MM
 5. Finish the block diagram design and check the address
-![Address]()
+![block diagram2](https://github.com/SamChang03/SOC_Lab/blob/main/Lab02/Screen%20shot/block%20diagram2.png)
+![Address](https://github.com/SamChang03/SOC_Lab/blob/main/Lab02/Screen%20shot/Address.png)
 
 ## Jupyter Notebook
-![result]()
+![result2](https://github.com/SamChang03/SOC_Lab/blob/main/Lab02/Screen%20shot/result2.png)
