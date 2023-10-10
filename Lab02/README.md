@@ -38,5 +38,11 @@ This lab is similar to Lab01. The board we use is KV260 and the cpp example is a
 - So, we can open a Jupyter Notebook website
 
 ## Jupyter Notebook
+Following the steps above, we can approach Jupyter Notebook
+- Upload this two files and a Python code(from resource) to the context
+![Jupyter Notebook](https://github.com/SamChang03/SOC_Lab/blob/main/Lab02/Screen%20shot/jupyter%20notebook.png)
+
+- Run the Python code to get the final result
+![result](https://github.com/SamChang03/SOC_Lab/blob/main/Lab02/Screen%20shot/result.png)
 
 # Stream Interface
