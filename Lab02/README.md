@@ -1,5 +1,5 @@
 # Lab02 KV260 and FIR design
-This lab is similat to Lab01 but the board we use is KV260. And, we construct the FIR disigh 
+This lab is similat to Lab01 but the board we use is KV260.
 ### Resourse: https://github.com/bol-edu/course-lab_2
 
 # AXI-Master Interface
