@@ -25,7 +25,8 @@ We will get more familiar with tools that we will use to develop our SOC in this
 - Open Vivado; create a project
 ![vivado](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/rent%20FPGA%20board.png)
 
-- Construct a block diagram. Then, ajust some parameters
+- Construct a block diagram. Then, adjust some parameters
+- Run block automation and onnection automation
 - PS: The folling sreenshot is from the handout in above URL
 ![block diagram](https://github.com/SamChang03/SOC_Lab/blob/main/Lab01/block%20diagram.png)
 
