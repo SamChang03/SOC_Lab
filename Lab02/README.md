@@ -71,6 +71,8 @@ This topic is almost the same as above, so I just note something different in th
 4. Connect pstrmoutput in FIR_N11_STRM to axi_dma_out_0 in S_AXIS_S2MM
 5. Finish the block diagram design and check the address
 ![block diagram2](https://github.com/SamChang03/SOC_Lab/blob/main/Lab02/Screen%20shot/block%20diagram2.png)
+
+-Check the address
 ![Address](https://github.com/SamChang03/SOC_Lab/blob/main/Lab02/Screen%20shot/Address.png)
 
 ## Jupyter Notebook
