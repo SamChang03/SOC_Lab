@@ -1,4 +1,4 @@
-# Lab02 KV260 and FIR design
+# Lab02 ZYSOC KV260 and FIR design
 This lab is similat to Lab01 but the board we use is KV260.
 ### Resourse: https://github.com/bol-edu/course-lab_2
 
