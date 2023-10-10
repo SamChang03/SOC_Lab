@@ -11,25 +11,22 @@ This lab is similat to Lab01 but the board we use is KV260.
 
 - First open Vitis_HLS and create a projrct
 - Upload the HLS code/testbench in Vitis_HLS  
-![HLS_code]()
-
-- Run the simulation to get the simulation result and check the HLS code meet our expectatoin
-![vitis_simulation]()  
+![HLS_code](https://github.com/SamChang03/SOC_Lab/blob/main/Lab02/Screen%20shot/vitis_hls.png)
       
 - Run synthesis and cosimulation to ensure that we can get the correct result in the hardware
 - Note that before we run the cosimulation, we need to comment out the pragma inculde ap_strl_none. Then, run synthesis and cosimulaion again to pass the cosimulation
-![synthesis_result]()  
-![cosimulation_result]()  
+![synthesis_result](https://github.com/SamChang03/SOC_Lab/blob/main/Lab02/Screen%20shot/hls_sythsis.png)  
+
 
 - After we pass the cosimulation, exporting RTL IP with Vitis_HLS.
 - Then open the Vivado
 ## Vivado
 - Open Vivado; create a project
-![vivado]()
+![vivado](https://github.com/SamChang03/SOC_Lab/blob/main/Lab02/Screen%20shot/vivado.png)
 
 - Construct a block diagram. Then, ajust some parameters
 - PS: The folling sreenshot is from the handout in above URL
-![block diagram]()
+![block diagram](https://github.com/SamChang03/SOC_Lab/blob/main/Lab02/Screen%20shot/block%20diagram.png)
 
 - Then we generate Bitstream, which will include the Synthesis and Implemetation processes
 - Find out **[project_name].bit** and **[project_name].hwh** and save the files in other directory to prepare for uploading the Bistreem on the FPGA board  
