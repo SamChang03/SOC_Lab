@@ -7,7 +7,7 @@ This lab is similar to Lab01. The board we use is KV260 and the cpp example is a
 - Download three files from the github link above  
 1.  FIR.cpp : Baic FIR C code
 2.  FIR.h : Head file
-3.  FIR.cpp : Testbench for the code
+3.  FIRTester.cpp : Testbench for the code
 
 - First open Vitis_HLS and create a projrct
 - Upload the HLS code/testbench in Vitis_HLS  
