@@ -5,7 +5,7 @@ This lab is similat to Lab01 but the board we use is KV260.
 # AXI-Master Interface
 ## Vitis HLS
 - Download three files from the github link above  
-1.  FIR.cpp : Baic mutiplication C code
+1.  FIR.cpp : Baic FIR C code
 2.  FIR.h : Head file
 3.  FIR.cpp : Testbench for the code
 
@@ -25,7 +25,6 @@ This lab is similat to Lab01 but the board we use is KV260.
 ![vivado](https://github.com/SamChang03/SOC_Lab/blob/main/Lab02/Screen%20shot/vivado.png)
 
 - Construct a block diagram. Then, ajust some parameters
-- PS: The folling sreenshot is from the handout in above URL
 ![block diagram](https://github.com/SamChang03/SOC_Lab/blob/main/Lab02/Screen%20shot/block%20diagram.png)
 
 - Then we generate Bitstream, which will include the Synthesis and Implemetation processes
