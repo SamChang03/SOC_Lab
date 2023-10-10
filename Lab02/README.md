@@ -1,5 +1,5 @@
 # Lab02 ZYSOC KV260 and FIR design
-This lab is similat to Lab01 but the board we use is KV260.
+This lab is similar to Lab01. The board we use is KV260 and the cpp example is about FIR design.
 ### Resourse: https://github.com/bol-edu/course-lab_2
 
 # AXI-Master Interface
