@@ -3,23 +3,26 @@ module fir
     parameter pDATA_WIDTH = 32,
     parameter Tape_Num    = 11
 )
-(
+(   //wirte data
     output  wire                     awready,
     output  wire                     wready,
     input   wire                     awvalid,
     input   wire [(pADDR_WIDTH-1):0] awaddr,
     input   wire                     wvalid,
     input   wire [(pDATA_WIDTH-1):0] wdata,
+    // read data
     output  wire                     arready,
     input   wire                     rready,
     input   wire                     arvalid,
     input   wire [(pADDR_WIDTH-1):0] araddr,
     output  wire                     rvalid,
-    output  wire [(pDATA_WIDTH-1):0] rdata,    
+    output  wire [(pDATA_WIDTH-1):0] rdata,
+    
     input   wire                     ss_tvalid, 
     input   wire [(pDATA_WIDTH-1):0] ss_tdata, 
     input   wire                     ss_tlast, 
     output  wire                     ss_tready, 
+    
     input   wire                     sm_tready, 
     output  wire                     sm_tvalid, 
     output  wire [(pDATA_WIDTH-1):0] sm_tdata, 
@@ -42,6 +45,32 @@ module fir
     input   wire                     axis_clk,
     input   wire                     axis_rst_n
 );
+
+/**** Assign Output ****/
+
+assign awready = ;
+assign wready = ;
+
+assign arready = ;
+assign rvalid = ;
+assign rdata = ;
+
+assign ss_tready = ;
+
+assign sm_tvalid = ;
+assign sm_tdata = ;
+assign sm_tlast = ;
+
+assign tap_WE = ;
+assign tap_EN = ;
+assign tap_Di = wdata;
+assign tap_A = ;
+
+assign data_WE = ;
+assign data_EN = ;
+assign data_Di = (ss_tvalid == 1) ? ss_tdata : 32'h00;
+assign data_A = ;
+
 
 /**** Change Bram(Data) Address With Clock ****/
 
@@ -92,4 +121,6 @@ always@ (posedge axis_clk) begin //hold the data for a cycle
      yi <= data_Do*tap_Do; 
      y <= y+yi ; 
     end 
+
+
 endmodule
