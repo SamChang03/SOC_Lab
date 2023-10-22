@@ -1,16 +1,38 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 10/17/2023 05:41:06 PM
+// Design Name: 
+// Module Name: FIR
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
 module fir 
 #(  parameter pADDR_WIDTH = 12,
     parameter pDATA_WIDTH = 32,
     parameter Tape_Num    = 11
 )
-(   //wirte data
+(   //wirte data with AXI-Light
     output  wire                     awready,
     output  wire                     wready,
     input   wire                     awvalid,
     input   wire [(pADDR_WIDTH-1):0] awaddr,
     input   wire                     wvalid,
     input   wire [(pDATA_WIDTH-1):0] wdata,
-    // read data
+    // read data with AXI-Light
     output  wire                     arready,
     input   wire                     rready,
     input   wire                     arvalid,
@@ -48,12 +70,11 @@ module fir
 
 /**** Assign Output ****/
 
-assign awready = ;
+assign awready = awvalid;
 assign wready = ;
 
-assign arready = ;
+assign arready = arvalid;
 assign rvalid = ;
-assign rdata = ;
 
 assign ss_tready = ;
 
@@ -72,6 +93,74 @@ assign data_Di = (ss_tvalid == 1) ? ss_tdata : 32'h00;
 assign data_A = ;
 
 
+//*** Configuration Register Address map ***//
+reg ap_start;
+reg ap_done;
+reg ap_idle;
+reg [(pDATA_WIDTH-1):0] data_lengh;
+integer i;
+
+//Read data
+always@(*)begin
+    if(rready) begin
+     case(araddr)
+      32'h00 : begin
+            rdata[0] = ap_start;          // ap_start is read by TB
+            rdata[1] = ap_down;            // ap_down is read by TB
+            rdata[2] = ap_idle;          // ap_idle is read by TB
+           end  
+      32'h10 : rdata = data_lengh;           //check 
+      32'h11 : rdata = data_lengh;
+      32'h12 : rdata = data_lengh;
+      32'h13 : rdata = data_lengh;
+      32'h13 : rdata = data_lengh;
+      32'h8x,32'h9x, 32'hAx,32'hBx,32'hCx,32'hDx, 32'hEx,32'hFx: rdata = tap_Do;     
+      default: rdata = 0;
+     endcase
+   end
+   else rdata = 0;
+end
+
+//Write data
+always@(*)begin
+    if(wready) begin
+     case(awaddr)
+      32'h00 : ap_start= wdata[0] ;          // ap_start is written by TB
+      32'h10 : data_lengh = wdata;           //check 
+      32'h11 : data_lengh = wdata;
+      32'h12 : data_lengh = wdata;
+      32'h13 : data_lengh = wdata;
+      32'h13 : data_lengh = wdata;
+      32'h8x,32'h9x, 32'hAx,32'hBx,32'hCx,32'hDx, 32'hEx,32'hFx: tap_Di = wdata;     
+      default: tap_Di = 0;
+      32'hFF : tap_Di = 0;
+     endcase
+   end
+   else rdata = 0;
+end
+
+
+always@(posedge axis_clk)begin
+  if(~axis_rst_n) 
+    ap_done <= 0;
+  else if(transfer_done)              //check 
+    ap_done <= 1;
+  else 
+    ap_done <= ap_done;
+end
+
+
+always@(posedge axis_clk)begin
+  if(~axis_rst_n) 
+    ap_idle <= 1;
+  else if(ap_state) 
+    ap_idle <= 0;
+  else if (proccess_done)              //check
+    ap_idle <= 1;
+  else 
+    ap_idle <= ap_idle;
+end
+
 /**** Change Bram(Data) Address With Clock ****/
 
 reg data_A_temp = 0;
@@ -82,7 +171,8 @@ always@ (posedge axis_clk) begin
     data_A_temp <= 0;
     else    
      data_A_temp <= data_A_temp + 1'd1;
-     
+end    
+ 
 always@ (posedge axis_clk) begin //hold the data for a cycle
     if (axis_rst_n) 
      data <= 0;
@@ -100,7 +190,7 @@ always@ (posedge axis_clk) begin
     tap_A_temp <= 0;
     else    
      tap_A_temp <= tap_A_temp + 1'd1;
-     
+end    
 always@ (posedge axis_clk) begin //hold the data for a cycle
     if (axis_rst_n) 
      tap <= 0;
@@ -122,5 +212,5 @@ always@ (posedge axis_clk) begin //hold the data for a cycle
      y <= y+yi ; 
     end 
 
-
+end
 endmodule
