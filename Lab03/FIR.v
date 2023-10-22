@@ -70,26 +70,27 @@ module fir
 
 /**** Assign Output ****/
 
-assign awready = awvalid;
+assign awready = ;
 assign wready = ;
 
 assign arready = arvalid;
-assign rvalid = ;
+assign rvalid = rvalid_reg;
+reg rvalid_reg;
 
-assign ss_tready = ;
+assign ss_tready = ss_tvalid&;
 
 assign sm_tvalid = ;
 assign sm_tdata = ;
 assign sm_tlast = ;
 
-assign tap_WE = ;
-assign tap_EN = ;
+assign tap_WE = {4{arvalid & wvalid & awaddr[7]}};
+assign tap_EN = 1;
 assign tap_Di = wdata;
 assign tap_A = ;
 
-assign data_WE = ;
-assign data_EN = ;
-assign data_Di = (ss_tvalid == 1) ? ss_tdata : 32'h00;
+assign data_WE = {4{(ss_tready & ss_tvalid)}};
+assign data_EN = 1;
+assign data_Di = ss_tdata;
 assign data_A = ;
 
 
@@ -98,7 +99,14 @@ reg ap_start;
 reg ap_done;
 reg ap_idle;
 reg [(pDATA_WIDTH-1):0] data_lengh;
-integer i;
+
+//implement read valid logic
+always @(posedge axis_clk) begin
+        if (~axis_rst_n) rvalid_reg <= 0;
+        else if ( ~rvalid_reg & ARVALID) rvalid_reg<= 1;
+        else if (rready && rvalid_reg)   rvalid_reg <= 0;
+        else   rvalid_reg <= 0;
+end
 
 //Read data
 always@(*)begin
@@ -139,7 +147,7 @@ always@(*)begin
    else rdata = 0;
 end
 
-
+//ap_done control
 always@(posedge axis_clk)begin
   if(~axis_rst_n) 
     ap_done <= 0;
@@ -149,7 +157,7 @@ always@(posedge axis_clk)begin
     ap_done <= ap_done;
 end
 
-
+//ap_idle control
 always@(posedge axis_clk)begin
   if(~axis_rst_n) 
     ap_idle <= 1;
