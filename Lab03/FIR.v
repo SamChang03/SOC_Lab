@@ -70,28 +70,38 @@ module fir
 
 /**** Assign Output ****/
 
-assign awready = ;
-assign wready = ;
+assign awready=(awvalid)?1'b1:1'b0; //when we get the wvalid, we send awready
+assign wready=(wvalid)?1'b1:1'b0;
 
-assign arready = arvalid;
-assign rvalid = rvalid_reg;
-reg rvalid_reg;
+assign arready = (~wready)?1'b1:1'b0;
+assign rvalid = (!wready)?1'b1:1'b0;
+assign rdata = rdata_reg;
 
-assign ss_tready = ss_tvalid&;
+assign ss_tready = (ap_start&ap_idle)|sm_tvalid;
 
-assign sm_tvalid = ;
-assign sm_tdata = ;
-assign sm_tlast = ;
+assign sm_tvalid = (~ap_start)&(sm_cnt>12'd10);
+assign sm_tdata = (sm_tvalid&sm_tready)?temp:sm_tdata;
+assign sm_tlast = (data_cnt==data_length)& ap_start ;
 
-assign tap_WE = {4{arvalid & wvalid & awaddr[7]}};
-assign tap_EN = 1;
+assign tap_WE = {4{(write_en&awrite_en)&(awaddr>=12'h20)}};
+assign tap_EN = (((write_en&awrite_en)|(read_en&aread_en))&((awaddr>=12'h20)||(araddr>=12'h20))|(ap_start))?1'b1:1'b0;
 assign tap_Di = wdata;
-assign tap_A = ;
+assign tap_A = awaddr-12'h20;
 
 assign data_WE = {4{(ss_tready & ss_tvalid)}};
-assign data_EN = 1;
-assign data_Di = ss_tdata;
-assign data_A = ;
+assign data_EN=(ss_tvalid&ss_tready|(!ss_tlast)|ap_start)?1'b1:1'b0;
+assign data_Di=(data_EN)?ss_tdata:data_Di;
+assign data_A=(data_EN)?(!ap_start)?12'h00:data_write_pnt:12'd40;
+
+//assign read / write enable
+assign write_en=(wvalid&wready)?1'b1:1'b0;
+assign awrite_en=(awvalid&awready)?1'b1:1'b0;
+assign read_en=(rvalid&rready)?1'b1:1'b0;
+assign aread_en=(arvalid&arready)?1'b1:1'b0;
+
+reg [(pDATA_WIDTH-1):0]data_cnt;
+reg [(pDATA_WIDTH-1):0]temp;
+reg [(pADDR_WIDTH-1):0]data_write_pnt,sm_cnt,offset,j_cnt;
 
 
 //*** Configuration Register Address map ***//
@@ -99,126 +109,156 @@ reg ap_start;
 reg ap_done;
 reg ap_idle;
 reg [(pDATA_WIDTH-1):0] data_lengh;
+reg [(pDATA_WIDTH-1):0] rdata_reg;
 
-//implement read valid logic
-always @(posedge axis_clk) begin
-        if (~axis_rst_n) rvalid_reg <= 0;
-        else if ( ~rvalid_reg & ARVALID) rvalid_reg<= 1;
-        else if (rready && rvalid_reg)   rvalid_reg <= 0;
-        else   rvalid_reg <= 0;
-end
-
-//Read data
+//Decide the rdata 
 always@(*)begin
-    if(rready) begin
-     case(araddr)
-      32'h00 : begin
-            rdata[0] = ap_start;          // ap_start is read by TB
-            rdata[1] = ap_down;            // ap_down is read by TB
-            rdata[2] = ap_idle;          // ap_idle is read by TB
-           end  
-      32'h10 : rdata = data_lengh;           //check 
-      32'h11 : rdata = data_lengh;
-      32'h12 : rdata = data_lengh;
-      32'h13 : rdata = data_lengh;
-      32'h13 : rdata = data_lengh;
-      32'h8x,32'h9x, 32'hAx,32'hBx,32'hCx,32'hDx, 32'hEx,32'hFx: rdata = tap_Do;     
-      default: rdata = 0;
-     endcase
-   end
-   else rdata = 0;
+	if(read_en & aread_en)begin
+		if(araddr==12'h00)begin
+			rdata_reg[0]<=ap_start;
+			rdata_reg[1]<=ap_done;
+			rdata_reg[2]<=ap_idle;
+		end
+		else if(araddr>=12'h20)
+			rdata_reg<=tap_Do;
+		else 
+			rdata_reg<=rdata_reg;
+	end
+	else
+	 rdata_reg<=rdata_reg;
 end
 
-//Write data
-always@(*)begin
-    if(wready) begin
-     case(awaddr)
-      32'h00 : ap_start= wdata[0] ;          // ap_start is written by TB
-      32'h10 : data_lengh = wdata;           //check 
-      32'h11 : data_lengh = wdata;
-      32'h12 : data_lengh = wdata;
-      32'h13 : data_lengh = wdata;
-      32'h13 : data_lengh = wdata;
-      32'h8x,32'h9x, 32'hAx,32'hBx,32'hCx,32'hDx, 32'hEx,32'hFx: tap_Di = wdata;     
-      default: tap_Di = 0;
-      32'hFF : tap_Di = 0;
-     endcase
-   end
-   else rdata = 0;
-end
 
-//ap_done control
+//Write data length
 always@(posedge axis_clk)begin
-  if(~axis_rst_n) 
-    ap_done <= 0;
-  else if(transfer_done)              //check 
-    ap_done <= 1;
-  else 
-    ap_done <= ap_done;
+    if(~axis_rst_n) 
+        data_length<=data_length;
+	else if(write_en & awrite_en & (awaddr==12'h10))  
+	   data_length<=wdata;
+	else 
+	   data_length<=data_length;
 end
 
 //ap_idle control
 always@(posedge axis_clk)begin
-  if(~axis_rst_n) 
-    ap_idle <= 1;
-  else if(ap_state) 
-    ap_idle <= 0;
-  else if (proccess_done)              //check
-    ap_idle <= 1;
-  else 
-    ap_idle <= ap_idle;
+	if(!axis_rst_n)begin
+		ap_idle<=1'b1;
+	end
+	else if(ap_done)begin
+		ap_idle<=1'b1;
+	end
+	else if(ap_start)begin
+		ap_idle<=1'b0;
+	end
+	else begin
+		ap_idle<=1'b1;
+	end
 end
 
-/**** Change Bram(Data) Address With Clock ****/
+//ap_down control
+always@(posedge axis_clk)begin
+	if(!axis_rst_n)
+		ap_done<=1'b0;
+	else if(sm_tlast)
+		ap_done<=1'b1;
+	else 
+		ap_done<=1'b0;
+end
 
-reg data_A_temp = 0;
-always@ (posedge axis_clk) begin 
-    if (axis_rst_n) // Reset Data Ram Address repeating
-     data_A_temp <= 0;
-    else if( data_A == 4'd11)
-    data_A_temp <= 0;
-    else    
-     data_A_temp <= data_A_temp + 1'd1;
-end    
- 
-always@ (posedge axis_clk) begin //hold the data for a cycle
-    if (axis_rst_n) 
-     data <= 0;
+//last of data
+always@(posedge axis_clk)begin
+	if(!axis_rst_n)begin
+		data_cnt<=32'd0;
+		sm_tlast<=1'b0;
+	end
+	else if(data_cnt == data_length)begin
+		data_cnt<=data_cnt;
+		sm_tlast<=1'b1;
+	end
+	else if(ap_start) begin
+		data_cnt<=data_cnt+32'b1;
+		sm_tlast<=1'b0;
+	end
+end
+
+
+//*** FIR Calculation ***//
+
+always@(posedge axis_clk)begin
+	if(ap_idle|ss_tready)begin
+		temp<=32'd0;
+	end
+	else if(ap_start)begin
+		temp<=temp+mul*tap_Do;
+	end
+	else begin
+		temp<=temp;
+	end
+end
+
+always@(posedge axis_clk)begin
+	if(~axis_clk)begin
+		mul<=32'd0;
+	end
+	else if((sm_cnt>1)&(sm_cnt<=j_cnt+12'd1))begin
+		mul<=data_Do;
+	end
+	else begin
+		mul<=32'd0;
+	end
+end
+
+
+always@(posedge axis_clk)begin
+    if(~ap_start)
+        sm_cnt<=12'd0;
+    else if(sm_cnt>12'd10)
+        sm_cnt<=12'd0;
     else 
-     data <=data_A_temp;    
+        sm_cnt<=sm_cnt+12'd1;
+
 end
 
-/**** Change Bram(Tap) Address With Clock ****/
-
-reg tap_A_temp = 0;
-always@ (posedge axis_clk) begin 
-    if (axis_rst_n) // Reset Data Ram Address repeating
-     tap_A_temp <= 0;
-    else if( tap_A == 4'd11)
-    tap_A_temp <= 0;
-    else    
-     tap_A_temp <= tap_A_temp + 1'd1;
-end    
-always@ (posedge axis_clk) begin //hold the data for a cycle
-    if (axis_rst_n) 
-     tap <= 0;
-    else 
-     tap <= tap_A_temp;    
-end
-
-/**** Multify h and x and sum that****/
-reg [(pDATA_WIDTH-1):0] yi;
-reg [(pDATA_WIDTH-1):0] y;
-
-always@ (posedge axis_clk) begin //hold the data for a cycle
-    if (axis_rst_n) begin
-     yi <= 0;
-     y <=0;
+always@(posedge axis_clk)begin
+    if((~axis_rst_n)|(offset>12'd10))begin
+        offset<=12'd0;
+    end
+    else if(ss_tready)begin
+        offset<=offset+12'd1;
     end
     else begin
-     yi <= data_Do*tap_Do; 
-     y <= y+yi ; 
-    end 
-
+        offset<=offset;
+    end
 end
+
+always@(posedge axis_clk)begin
+    if(~ap_start)begin
+        data_read_pnt<=12'd28;
+    end
+    else if(ss_tready)begin
+        data_read_pnt<=12'h28-offset*4;
+    end
+    else if(data_read_pnt<12'h28)begin
+        data_read_pnt<=data_read_pnt+12'd4;
+    end
+    else begin
+        data_read_pnt<=12'h0;
+    end
+end
+
+always@(posedge axis_clk)begin
+    if(~axis_rst_n)begin
+        j_cnt<=12'd0;
+    end
+    else if(ss_tready)begin
+        j_cnt<=j_cnt+12'd1;
+    end
+    else if(j_cnt>12'd11)begin
+        j_cnt<=j_cnt;
+    end
+    else begin
+        j_cnt<=j_cnt;
+    end
+end
+
 endmodule
