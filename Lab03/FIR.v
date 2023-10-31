@@ -89,9 +89,9 @@ assign tap_Di = wdata;
 assign tap_A = awaddr-12'h20;
 
 assign data_WE = {4{(ss_tready & ss_tvalid)}};
-assign data_EN=(ss_tvalid&ss_tready|(!ss_tlast)|ap_start)?1'b1:1'b0;
+assign data_EN=(ss_tvalid & ss_tready|(~ss_tlast)|ap_start)?1'b1:1'b0;
 assign data_Di=(data_EN)?ss_tdata:data_Di;
-assign data_A=(data_EN)?(!ap_start)?12'h00:data_write_pnt:12'd40;
+assign data_A=(~ap_start)?12'h00 : data_pnt;
 
 //assign read / write enable
 assign write_en=(wvalid&wready)?1'b1:1'b0;
@@ -101,7 +101,7 @@ assign aread_en=(arvalid&arready)?1'b1:1'b0;
 
 reg [(pDATA_WIDTH-1):0]data_cnt;
 reg [(pDATA_WIDTH-1):0]temp;
-reg [(pADDR_WIDTH-1):0]data_write_pnt,sm_cnt,offset,j_cnt;
+reg [(pADDR_WIDTH-1):0]data_pnt,sm_cnt,offset,j_cnt;
 
 
 //*** Configuration Register Address map ***//
@@ -220,33 +220,6 @@ always@(posedge axis_clk)begin
 end
 
 always@(posedge axis_clk)begin
-    if((~axis_rst_n)|(offset>12'd10))begin
-        offset<=12'd0;
-    end
-    else if(ss_tready)begin
-        offset<=offset+12'd1;
-    end
-    else begin
-        offset<=offset;
-    end
-end
-
-always@(posedge axis_clk)begin
-    if(~ap_start)begin
-        data_read_pnt<=12'd28;
-    end
-    else if(ss_tready)begin
-        data_read_pnt<=12'h28-offset*4;
-    end
-    else if(data_read_pnt<12'h28)begin
-        data_read_pnt<=data_read_pnt+12'd4;
-    end
-    else begin
-        data_read_pnt<=12'h0;
-    end
-end
-
-always@(posedge axis_clk)begin
     if(~axis_rst_n)begin
         j_cnt<=12'd0;
     end
@@ -260,5 +233,34 @@ always@(posedge axis_clk)begin
         j_cnt<=j_cnt;
     end
 end
+
+always@(posedge axis_clk)begin
+    if((~axis_rst_n)|(offset>12'd10))begin
+        offset<=12'd0;
+    end
+    else if(ss_tready)begin
+        offset<=offset+12'd1;
+    end
+    else begin
+        offset<=offset;
+    end
+end
+
+always@(posedge axis_clk)begin
+    if(~ap_start)begin
+        data_pnt<=12'd28;
+    end
+    else if(ss_tready)begin
+        data_pnt<=12'h28-offset*4;
+    end
+    else if(data_pnt<12'h28)begin
+        data_pnt<=data_pnt+12'd4;
+    end
+    else begin
+        data_pnt<=12'h0;
+    end
+end
+
+
 
 endmodule
