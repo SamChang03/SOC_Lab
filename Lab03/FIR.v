@@ -110,6 +110,7 @@ reg ap_done;
 reg ap_idle;
 reg [(pDATA_WIDTH-1):0] data_lengh;
 reg [(pDATA_WIDTH-1):0] rdata_reg;
+reg [(pDATA_WIDTH-1):0] mul;
 
 //Decide the rdata 
 always@(*)begin
@@ -260,7 +261,5 @@ always@(posedge axis_clk)begin
         data_pnt<=12'h0;
     end
 end
-
-
 
 endmodule
