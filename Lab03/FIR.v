@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 10/17/2023 05:41:06 PM
+// Create Date: 08/20/2023 10:38:55 AM
 // Design Name: 
-// Module Name: FIR
+// Module Name: fir_tb
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,246 +20,299 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module fir 
+module fir_tb
 #(  parameter pADDR_WIDTH = 12,
     parameter pDATA_WIDTH = 32,
-    parameter Tape_Num    = 11
-)
-(   //wirte data with AXI-Light
-    output  wire                     awready,
-    output  wire                     wready,
-    input   wire                     awvalid,
-    input   wire [(pADDR_WIDTH-1):0] awaddr,
-    input   wire                     wvalid,
-    input   wire [(pDATA_WIDTH-1):0] wdata,
-    // read data with AXI-Light
-    output  wire                     arready,
-    input   wire                     rready,
-    input   wire                     arvalid,
-    input   wire [(pADDR_WIDTH-1):0] araddr,
-    output  wire                     rvalid,
-    output  wire [(pDATA_WIDTH-1):0] rdata,
+    parameter Tape_Num    = 11,
+    parameter Data_Num    = 600
+)();
+    wire                        awready;
+    wire                        wready;
+    reg                         awvalid;
+    reg   [(pADDR_WIDTH-1): 0]  awaddr;
+    reg                         wvalid;
+    reg signed [(pDATA_WIDTH-1) : 0] wdata;
+    wire                        arready;
+    reg                         rready;
+    reg                         arvalid;
+    reg         [(pADDR_WIDTH-1): 0] araddr;
+    wire                            rvalid;
+    wire signed [(pDATA_WIDTH-1): 0] rdata;
+
+
+    reg                         axis_clk;
+    reg                         axis_rst_n;
+
+// ram for tap
+    wire                   [3:0]tap_WE;
+    wire                     tap_EN;
+    wire [(pDATA_WIDTH-1):0] tap_Di;
+    wire [(pADDR_WIDTH-1):0] tap_A;
+    wire [(pDATA_WIDTH-1):0] tap_Do;
+
+// ram for data RAM
+    wire [3:0]               data_WE;
+    wire                     data_EN;
+    wire [(pDATA_WIDTH-1):0] data_Di;
+    wire [(pADDR_WIDTH-1):0] data_A;
+    wire [(pDATA_WIDTH-1):0] data_Do;
     
-    input   wire                     ss_tvalid, 
-    input   wire [(pDATA_WIDTH-1):0] ss_tdata, 
-    input   wire                     ss_tlast, 
-    output  wire                     ss_tready, 
+    reg                         ss_tvalid;
+    reg signed [(pDATA_WIDTH-1) : 0] ss_tdata;
+    reg                         ss_tlast;
+    wire                        ss_tready;
+
+    reg                         sm_tready;
+    wire                        sm_tvalid;
+    wire signed [(pDATA_WIDTH-1) : 0] sm_tdata;
+    wire                        sm_tlast;
+
+
+
+      fir fir_DUT(
+        .awready(awready),
+        .wready(wready),
+        .awvalid(awvalid),
+        .awaddr(awaddr),
+        .wvalid(wvalid),
+        .wdata(wdata),
+        .arready(arready),
+        .rready(rready),
+        .arvalid(arvalid),
+        .araddr(araddr),
+        .rvalid(rvalid),
+        .rdata(rdata),
+        // ram for tap
+        .tap_WE(tap_WE),
+        .tap_EN(tap_EN),
+        .tap_Di(tap_Di),
+        .tap_A(tap_A),
+        .tap_Do(tap_Do),
+
+        // ram for data
+        .data_WE(data_WE),
+        .data_EN(data_EN),
+        .data_Di(data_Di),
+        .data_A(data_A),
+        .data_Do(data_Do),
+        
+        
+        .ss_tvalid(ss_tvalid),
+        .ss_tdata(ss_tdata),
+        .ss_tlast(ss_tlast),
+        .ss_tready(ss_tready),
+        
+        .sm_tready(sm_tready),
+        .sm_tvalid(sm_tvalid),
+        .sm_tdata(sm_tdata),
+        .sm_tlast(sm_tlast),
+        
+        
+        .axis_clk(axis_clk),
+        .axis_rst_n(axis_rst_n)
+
+        );
     
-    input   wire                     sm_tready, 
-    output  wire                     sm_tvalid, 
-    output  wire [(pDATA_WIDTH-1):0] sm_tdata, 
-    output  wire                     sm_tlast, 
+    // RAM for tap
+    bram11 tap_RAM (
+        .CLK(axis_clk),
+        .WE(tap_WE),
+        .EN(tap_EN),
+        .Di(tap_Di),
+        .A(tap_A),
+        .Do(tap_Do)
+    );
+
+   bram11 data_RAM(
+        .CLK(axis_clk),
+        .WE(data_WE),
+        .EN(data_EN),
+        .Di(data_Di),
+        .A(data_A),
+        .Do(data_Do)
+    );
+
+    initial begin
+        axis_clk = 0;
+        forever begin
+            #5 axis_clk = (~axis_clk);
+        end
+    end
     
-    // bram for tap RAM
-    output  wire [3:0]               tap_WE,
-    output  wire                     tap_EN,
-    output  wire [(pDATA_WIDTH-1):0] tap_Di,
-    output  wire [(pADDR_WIDTH-1):0] tap_A,
-    input   wire [(pDATA_WIDTH-1):0] tap_Do,
-
-    // bram for data RAM
-    output  wire [3:0]               data_WE,
-    output  wire                     data_EN,
-    output  wire [(pDATA_WIDTH-1):0] data_Di,
-    output  wire [(pADDR_WIDTH-1):0] data_A,
-    input   wire [(pDATA_WIDTH-1):0] data_Do,
-
-    input   wire                     axis_clk,
-    input   wire                     axis_rst_n
-);
-
-/**** Assign Output ****/
-
-assign awready=(awvalid)?1'b1:1'b0; //when we get the wvalid, we send awready
-assign wready=(wvalid)?1'b1:1'b0;
-
-assign arready = (~wready)?1'b1:1'b0;
-assign rvalid = (!wready)?1'b1:1'b0;
-assign rdata = rdata_reg;
-
-assign ss_tready = (ap_start&ap_idle)|sm_tvalid;
-
-assign sm_tvalid = (~ap_start)&(sm_cnt>12'd10);
-assign sm_tdata = (sm_tvalid&sm_tready)?temp:sm_tdata;
-assign sm_tlast = (data_cnt==data_length)& ap_start ;
-
-assign tap_WE = {4{(write_en&awrite_en)&(awaddr>=12'h20)}};
-assign tap_EN = (((write_en&awrite_en)|(read_en&aread_en))&((awaddr>=12'h20)||(araddr>=12'h20))|(ap_start))?1'b1:1'b0;
-assign tap_Di = wdata;
-assign tap_A = awaddr-12'h20;
-
-assign data_WE = {4{(ss_tready & ss_tvalid)}};
-assign data_EN=(ss_tvalid & ss_tready|(~ss_tlast)|ap_start)?1'b1:1'b0;
-assign data_Di=(data_EN)?ss_tdata:data_Di;
-assign data_A=(~ap_start)?12'h00 : data_pnt;
-
-//assign read / write enable
-assign write_en=(wvalid&wready)?1'b1:1'b0;
-assign awrite_en=(awvalid&awready)?1'b1:1'b0;
-assign read_en=(rvalid&rready)?1'b1:1'b0;
-assign aread_en=(arvalid&arready)?1'b1:1'b0;
-
-reg [(pDATA_WIDTH-1):0]data_cnt;
-reg [(pDATA_WIDTH-1):0]temp;
-reg [(pADDR_WIDTH-1):0]data_pnt,sm_cnt,offset,j_cnt;
-
-
-//*** Configuration Register Address map ***//
-reg ap_start;
-reg ap_done;
-reg ap_idle;
-reg [(pDATA_WIDTH-1):0] data_lengh;
-reg [(pDATA_WIDTH-1):0] rdata_reg;
-reg [(pDATA_WIDTH-1):0] mul;
-
-//Decide the rdata 
-always@(*)begin
-	if(read_en & aread_en)begin
-		if(araddr==12'h00)begin
-			rdata_reg[0]<=ap_start;
-			rdata_reg[1]<=ap_done;
-			rdata_reg[2]<=ap_idle;
-		end
-		else if(araddr>=12'h20)
-			rdata_reg<=tap_Do;
-		else 
-			rdata_reg<=rdata_reg;
-	end
-	else
-	 rdata_reg<=rdata_reg;
-end
-
-
-//Write data length
-always@(posedge axis_clk)begin
-    if(~axis_rst_n) 
-        data_length<=data_length;
-	else if(write_en & awrite_en & (awaddr==12'h10))  
-	   data_length<=wdata;
-	else 
-	   data_length<=data_length;
-end
-
-//ap_idle control
-always@(posedge axis_clk)begin
-	if(!axis_rst_n)begin
-		ap_idle<=1'b1;
-	end
-	else if(ap_done)begin
-		ap_idle<=1'b1;
-	end
-	else if(ap_start)begin
-		ap_idle<=1'b0;
-	end
-	else begin
-		ap_idle<=1'b1;
-	end
-end
-
-//ap_down control
-always@(posedge axis_clk)begin
-	if(!axis_rst_n)
-		ap_done<=1'b0;
-	else if(sm_tlast)
-		ap_done<=1'b1;
-	else 
-		ap_done<=1'b0;
-end
-
-//last of data
-always@(posedge axis_clk)begin
-	if(!axis_rst_n)begin
-		data_cnt<=32'd0;
-		sm_tlast<=1'b0;
-	end
-	else if(data_cnt == data_length)begin
-		data_cnt<=data_cnt;
-		sm_tlast<=1'b1;
-	end
-	else if(ap_start) begin
-		data_cnt<=data_cnt+32'b1;
-		sm_tlast<=1'b0;
-	end
-end
-
-
-//*** FIR Calculation ***//
-
-always@(posedge axis_clk)begin
-	if(ap_idle|ss_tready)begin
-		temp<=32'd0;
-	end
-	else if(ap_start)begin
-		temp<=temp+mul*tap_Do;
-	end
-	else begin
-		temp<=temp;
-	end
-end
-
-always@(posedge axis_clk)begin
-	if(~axis_clk)begin
-		mul<=32'd0;
-	end
-	else if((sm_cnt>1)&(sm_cnt<=j_cnt+12'd1))begin
-		mul<=data_Do;
-	end
-	else begin
-		mul<=32'd0;
-	end
-end
-
-
-always@(posedge axis_clk)begin
-    if(~ap_start)
-        sm_cnt<=12'd0;
-    else if(sm_cnt>12'd10)
-        sm_cnt<=12'd0;
-    else 
-        sm_cnt<=sm_cnt+12'd1;
-
-end
-
-always@(posedge axis_clk)begin
-    if(~axis_rst_n)begin
-        j_cnt<=12'd0;
+    integer timeout = (1000000);
+    initial begin
+        while(timeout > 0) begin
+            @(posedge axis_clk);
+            timeout = timeout - 1;
+        end
+        $display($time, "Simualtion Hang ....");
+        $finish;
     end
-    else if(ss_tready)begin
-        j_cnt<=j_cnt+12'd1;
+    
+    reg signed [(pDATA_WIDTH-1):0] Din_list[0:(Data_Num-1)];
+    reg signed [(pDATA_WIDTH-1):0] golden_list[0:(Data_Num-1)];
+    reg [31:0]  data_length;
+    integer Din, golden, input_data, golden_data, m;
+    initial begin
+        data_length = 0;
+        Din = $fopen("/home/samchang/SOC_Lab/Lab03/samples_triangular_wave.dat","r");
+        golden = $fopen("/home/samchang/SOC_Lab/Lab03/out_gold.dat","r");
+        for(m=0;m<Data_Num;m=m+1) begin
+            input_data = $fscanf(Din,"%d", Din_list[m]);
+            golden_data = $fscanf(golden,"%d", golden_list[m]);
+            data_length = data_length + 1;
+        end
     end
-    else if(j_cnt>12'd11)begin
-        j_cnt<=j_cnt;
-    end
-    else begin
-        j_cnt<=j_cnt;
-    end
-end
+    
+    
 
-always@(posedge axis_clk)begin
-    if((~axis_rst_n)|(offset>12'd10))begin
-        offset<=12'd0;
+    initial begin
+        axis_rst_n = 0;
+        @(posedge axis_clk); @(posedge axis_clk);
+        axis_rst_n = 1;
     end
-    else if(ss_tready)begin
-        offset<=offset+12'd1;
-    end
-    else begin
-        offset<=offset;
-    end
-end
 
-always@(posedge axis_clk)begin
-    if(~ap_start)begin
-        data_pnt<=12'd28;
+    reg signed [31:0] coef[0:10]; // fill in coef 
+    initial begin
+        coef[0]  =  32'd0;
+        coef[1]  = -32'd10;
+        coef[2]  = -32'd9;
+        coef[3]  =  32'd23;
+        coef[4]  =  32'd56;
+        coef[5]  =  32'd63;
+        coef[6]  =  32'd56;
+        coef[7]  =  32'd23;
+        coef[8]  = -32'd9;
+        coef[9]  = -32'd10;
+        coef[10] =  32'd0;
     end
-    else if(ss_tready)begin
-        data_pnt<=12'h28-offset*4;
+integer i;
+
+  initial begin
+        $display("------------Start simulation-----------");
+        ss_tvalid = 0;
+        $display("----Start the data input(AXI-Stream)----");
+        for(i=0;i<(data_length-1);i=i+1) begin
+            ss_tlast = 0; ss(Din_list[i]);
+        end
+         config_read_check(12'h00, 32'h00, 32'h0000_000f); 
+         arvalid <= 0; 
+         ss_tlast = 1; ss(Din_list[(Data_Num-1)]);
+      $display("------End the data input(AXI-Stream)------");
+ end
+    reg error;
+    reg status_error;
+
+   initial begin
+        error = 0; status_error = 0;
+        sm_tready = 1;
+        wait (sm_tvalid);
+        for(k=0;k <data_length;k=k+1) begin
+        sm(golden_list[k],k);
+        end
+       config_read_check(12'h00, 32'h06, 32'h0000_0002); // check ap_done = 1 (0x00 [bit 1])
+       config_read_check(12'h00, 32'h06, 32'h0000_0004);
+     arvalid <= 0; // check ap_idle = 1 (0x00 [bit 2])
+        if (error == 0 & error_coef == 0) begin
+            $display("---------------------------------------------");
+            $display("-----------Congratulations! Pass-------------");
+        end
+        else begin
+            $display("--------Simulation Failed---------");
+        end
+       $finish;
     end
-    else if(data_pnt<12'h28)begin
-        data_pnt<=data_pnt+12'd4;
+reg error_coef;
+integer k;
+    initial begin
+        error_coef = 0;
+        $display("----Start the coefficient input(AXI-lite)----");
+        config_write(12'h10, data_length);
+        for(k=0; k< Tape_Num; k=k+1) begin
+            config_write(12'h80+4*k, coef[k]);
+        end
+        awvalid <= 0; wvalid <= 0;
+        // read-back and check
+        $display(" Check Coefficient ...");
+            for(k=0; k < Tape_Num; k=k+1) begin
+            config_read_check(12'h80+4*k, coef[k], 32'hffffffff);
+        end         
+        arvalid <= 0;
+        $display(" Tape programming done ...");
+        $display(" Start FIR");
+        @(posedge axis_clk) config_write(12'h00, 32'h0000_0001); // ap_start = 1
+         awvalid <= 0; wvalid <= 0;
+        $display("----End the coefficient input(AXI-lite)----");
     end
-    else begin
-        data_pnt<=12'h0;
-    end
-end
+
+
+
+    task config_write;
+        input [11:0]    addr;
+        input [31:0]    data;
+        begin
+            awvalid <= 0; wvalid <= 0;
+            @(posedge axis_clk);
+            awvalid <= 1; awaddr <= addr;
+            wvalid  <= 1; wdata <= data;
+            @(posedge axis_clk);
+            while (!wready) @(posedge axis_clk);
+        end
+    endtask
+
+    task config_read_check;
+        input [11:0]        addr;
+        input signed [31:0] exp_data;
+        input [31:0]        mask;
+        begin
+            arvalid <= 0;
+            @(posedge axis_clk);
+            arvalid <= 1; araddr <= addr;
+            rready <= 1;
+            @(posedge axis_clk);
+            while (!rvalid) @(posedge axis_clk);
+            if( (rdata & mask) != (exp_data & mask)) begin
+                $display("ERROR: exp = %d, rdata = %d", exp_data, rdata);
+                error_coef <= 1;
+            end else begin
+                $display("OK: exp = %d, rdata = %d", exp_data, rdata);
+            end
+        end
+    endtask
+    
+        task ss;
+        input  signed [31:0] in1;
+        begin
+            ss_tvalid <= 1;
+            ss_tdata  <= in1;
+            @(posedge axis_clk);
+            while (!ss_tready) begin
+                @(posedge axis_clk);
+            end
+        end
+    endtask
+
+
+    task sm;
+        input  signed [31:0] in2; // golden data
+        input         [31:0] pcnt; // pattern count
+        begin
+            sm_tready <= 1;
+            @(posedge axis_clk) 
+            wait(sm_tvalid);
+        
+            while(!sm_tvalid) @(posedge axis_clk);
+            if (sm_tdata != in2) begin
+                $display("[ERROR] [Pattern %d] Golden answer: %d, Your answer: %d", pcnt, in2, sm_tdata);
+                error <= 1;
+            end
+            else begin
+                $display("[PASS] [Pattern %d] Golden answer: %d, Your answer: %d", pcnt, in2, sm_tdata);
+            end
+            @(posedge axis_clk);
+        end
+    endtask
+
+
 
 endmodule
