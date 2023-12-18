@@ -1,530 +1,394 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 12/15/2023 12:53:01 AM
-// Design Name: 
-// Module Name: calc_pipeline
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
-module fir
+module fir 
 #(  parameter pADDR_WIDTH = 12,
     parameter pDATA_WIDTH = 32,
     parameter Tape_Num    = 11
 )
 (
-    // AXI4-Lite 
-    // Synchronous write tap parameters
+    output  wire                     awready,
+    output  wire                     wready,
+    input   wire                     awvalid,
+    input   wire [(pADDR_WIDTH-1):0] awaddr,
+    input   wire                     wvalid,
+    input   wire [(pDATA_WIDTH-1):0] wdata,
+    output  wire                     arready,
+    input   wire                     rready,
+    input   wire                     arvalid,
+    input   wire [(pADDR_WIDTH-1):0] araddr,
+    output  wire                     rvalid,
+    output  wire [(pDATA_WIDTH-1):0] rdata,    
+    input   wire                     ss_tvalid, 
+    input   wire [(pDATA_WIDTH-1):0] ss_tdata, 
+    input   wire                     ss_tlast, 
+    output  wire                     ss_tready, 
+    input   wire                     sm_tready, 
+    output  wire                     sm_tvalid, 
+    output  wire [(pDATA_WIDTH-1):0] sm_tdata, 
+    output  wire                     sm_tlast, 
+    
+    // bram for tap RAM
+    output  wire [3:0]               tap_WE,
+    output  wire                     tap_EN,
+    output  wire [(pDATA_WIDTH-1):0] tap_Di,
+    output  wire [(pADDR_WIDTH-1):0] tap_A,
+    input   wire [(pDATA_WIDTH-1):0] tap_Do,
 
-    output  wire                     awready,   // aw_ready : Fir is ready for accepting "WRITE" address. (write address request)
-    input   wire                     awvalid,   // aw_valid : The "WRITE" address is valid. (input of fir)
-    input   wire [(pADDR_WIDTH-1):0] awaddr,    // aw_addr  : Address to be "WRITTEN".
-    output  wire                     wready,    // w_ready  : Fir is ready for accepting "WRITE" data. (write data request)
-    input   wire                     wvalid,    // w_valid  : The "WRITE" data is valid.
-    input   wire  [(pDATA_WIDTH-1):0] wdata,     // w_data   : Data to be "WRITTEN".
-    
-    // AXI4-Lite 
-    // Synchronous read tap parameters
-    
-    output  wire                     arready,   // ar_ready : Fir is ready for accepting "READ" address. (write address request)
-    input   wire                     arvalid,   // ar_valid : The "READ" address is valid. (input of fir)
-    input   wire [(pADDR_WIDTH-1):0] araddr,    // ar_addr  : Address to be "READ".
-    input   wire                     rready,    // r_ready  : Testbench is ready to accept "READ" data. (read data request)
-    output  wire                     rvalid,    // r_valid  : The "READ" data is valid.
-    output  wire  [(pDATA_WIDTH-1):0] rdata,     // r_data   : Data to be "READ".
-    
-    // AXI4-Stream
-    // Stream Slave : Send data to FIR
-    
-    output  wire                     ss_tready,  // ss_tready : Fir is ready for accepting input data.
-    input   wire                     ss_tvalid,  // ss_tvalid : Data from testbench is valid.
-    input   wire [(pDATA_WIDTH-1):0] ss_tdata,   // ss_tdata  : Data input.
-    input   wire                     ss_tlast,   // ss_tlast  : Signal of last input data.
-    
-    // AXI4-Stream
-    // Stream Master : Send data back to Testbench
-    
-    input   wire                     sm_tready,  // sm_tready : Testbench is ready for accepting output data.
-    output  wire                     sm_tvalid,  // sm_tvalid : Data from fir is valid.
-    output  wire [(pDATA_WIDTH-1):0] sm_tdata,   // sm_tdata  : Data output.
-    output  wire                     sm_tlast,   // sm_tlast  : Signal of last output data.
-    
-    // Bram for tap RAM
-    
-    output  wire [3:0]               tap_WE,     // tap_WE : Write data command of Tap RAM.
-    output  wire                     tap_EN,     // tap_EN : Enable of write / read function of Tap RAM.
-    output  wire [(pDATA_WIDTH-1):0] tap_Di,     // tap_Di : Input of Tap RAM. (Tap parameter)
-    output  wire [(pADDR_WIDTH-1):0] tap_A,      // tap_A  : Command address of Tap RAM.
-    input   wire [(pDATA_WIDTH-1):0] tap_Do,     // tap_Do : Output of Tap RAM. (Tap parameter)
+    // bram for data RAM
+    output  wire [3:0]               data_WE,
+    output  wire                     data_EN,
+    output  wire [(pDATA_WIDTH-1):0] data_Di,
+    output  wire [(pADDR_WIDTH-1):0] data_A,
+    input   wire [(pDATA_WIDTH-1):0] data_Do,
 
-    // Bram for data RAM
-    
-    output  wire [3:0]               data_WE,    // data_WE : Write data command of Data RAM.
-    output  wire                     data_EN,    // data_EN : Enable of write / read function of Data RAM.
-    output  wire [(pDATA_WIDTH-1):0] data_Di,    // data_Di : Input of Data RAM. (Input Data)
-    output  wire [(pADDR_WIDTH-1):0] data_A,     // data_A  : Command address of Data RAM.
-    input   wire [(pDATA_WIDTH-1):0] data_Do,    // data_Do : Output of Data RAM. (Input Data)
-
-    input   wire                     axis_clk,   // Clock source.
-    input   wire                     axis_rst_n  // Global reset source, active low.
-
-
+    input   wire                     axis_clk,
+    input   wire                     axis_rst_n
 );
 
+    // write your code here!
+    // addr decode
+    localparam MAX_ADDR = (Tape_Num - 1) << 2; // 12'h28
+    // fir state
+    localparam S_IDLE = 3'd0; // idle state, wait for ap_start
+    localparam S_LOAD = 3'd1; // stream in, data load to bram, wait for ss_tvalid
+    localparam S_CALC = 3'd2; // read data from bram and calculate (11 cycles)
+    localparam S_SEND = 3'd3; // finish calculation, wait for stream out finish (sm_tready)
+    localparam S_DONE = 3'd4; // last data send to stream out and was acked, wait for ap_done acked
 
-    localparam  RESET = 3'd0, INIT = 3'd1, IDLE = 3'd2, WAIT = 3'd3, 
-                CALC = 3'd4, LAST = 3'd5, DONE = 3'd6;
+    // fir ctrl signal
+    wire       ap_start;
+    wire       ap_ready;
+    wire       ap_done;
+    wire       ap_idle;
+    wire       ap_done_ack;
+    reg  [2:0] state_r, state_w;
+    reg  [3:0] i_r;              // counter for inner loop
+    reg        first_ten_data_r; // first ten data flag, pad 0 to multiplier
+    reg        last_r;           // last data flag
+    wire       load_done;
+    wire       calc_done;
+    wire       send_done;
+    // fir data signal
+    wire [(pDATA_WIDTH-1):0] data_len;
+    reg  [(pADDR_WIDTH-1):0] waddr_r;
+    wire [(pADDR_WIDTH-1):0] raddr;
+    wire [(pADDR_WIDTH-1):0] raddr_sft;  // circular shift for read addr
+    wire [3:0]               axi_tap_we; // for axilite module output
+    wire [(pADDR_WIDTH-1):0] axi_tap_a;  // for axilite module output
+    reg  [(pDATA_WIDTH-1):0] acc_r; // shift add tmp data
+    wire [(pDATA_WIDTH-1):0] mul_a, mul_b, mul_o;
+    wire [(pDATA_WIDTH-1):0] add_a, add_b, add_o;
+    // fir wire assignment
+    assign load_done = (state_r == S_LOAD && ss_tvalid);
+    assign calc_done = (i_r == Tape_Num);
+    assign send_done = (state_r == S_SEND && sm_tready);
+    assign ap_ready  = (state_r == S_IDLE && ap_start);
+    assign ap_done   = (state_r == S_DONE);
+    assign ap_idle   = (state_r == S_IDLE || state_r == S_DONE);
+    assign raddr     = waddr_r + ((i_r + 1) << 2);
+    assign raddr_sft = (raddr > MAX_ADDR) ? raddr - (MAX_ADDR + 12'h04) : raddr;
+    assign mul_a     = (first_ten_data_r && i_r <= ((MAX_ADDR - waddr_r) >> 2) && i_r >= 1) ? 0 : data_Do;
+    assign mul_b     = tap_Do;
+    assign add_a     = acc_r;
+    assign add_b     = mul_o;
+    // output assignment
+    assign ss_tready = (state_r == S_LOAD);
+    assign sm_tvalid = (state_r == S_SEND);
+    assign sm_tdata  = (state_r == S_SEND) ? acc_r : 0;
+    assign sm_tlast  = (state_r == S_SEND & last_r);
+    assign data_WE   = (load_done) ? 4'b1111 : 4'b0000;
+    assign data_EN   = 1'b1;
+    assign data_Di   = (load_done) ? ss_tdata : 0;
+    assign data_A    = (load_done) ? waddr_r : raddr_sft;
+    assign tap_WE    = (state_r == S_CALC) ? 4'b0000 : axi_tap_we;
+    assign tap_EN    = 1'b1;
+    assign tap_A     = (state_r == S_CALC) ? MAX_ADDR - (i_r << 2) : axi_tap_a;
 
-    reg [2:0] state, next_state;
-    
-    reg [3:0] Tap_addr;
-    reg [3:0] next_Tap_addr;
-    reg [3:0] Data_addr, next_Data_addr;
-    reg [3:0] Write_addr, next_Write_addr;
-    reg [3:0] counter, next_counter;
-
-
-
-    reg [(pDATA_WIDTH-1):0] data_Di_reg;
-    reg [3:0]               addr_reg;
-
-    wire                    TD_output_control;
-    wire                    DD_output_control;
-    wire                    adder_rst_control;
-    wire                    output_control;
-
-    wire                     ap_start;
-    wire                     ap_idle;
-    wire                     ap_done;
-    wire [3:0]               addr;
-    wire [(pDATA_WIDTH-1):0] data_length;
-    wire                     cal_rst;
-
-    assign ap_idle   = (state==WAIT | state==CALC | state==LAST) ? 0 : 1;
-    assign ap_done   = (state==DONE) ? 1 : 0;
-    assign ss_tready = (state==WAIT) ? 1 : 0;
-    assign sm_tvalid = (counter==14) ? 1 : 0;
-    assign sm_hs     = sm_tready & sm_tvalid;
-    assign sm_tlast  = (state==LAST & counter==14 & sm_hs) ? 1 : 0;
-    assign data_WE   = (ss_tready & ss_tvalid | state==INIT) ? 4'b1111 : 4'b0;
-    assign data_EN   = 1;
-    assign data_Di   = data_Di_reg;
-    assign cal_rst_n = (state==IDLE) ? 0 : 1;
-
-    assign TD_output_control = (counter==11) ? 1 : 0;
-    assign DD_output_control = (counter==11) ? 1 : 0;
-    assign adder_rst_control = (state==INIT | counter==14) ? 1 : 0;
-    assign output_control    = (counter==13) ? 1 : 0;
-    
-    assign addr = addr_reg;
-    assign data_A = {6'b0, addr, 2'b0};
-	
-    //////////////////////////////
-    // Lab 4 adding
-    reg                     last_signal;    // infer it's last signal
-    // last signal
+    // fir state machine
+    always @(*) begin
+        state_w = state_r;
+        case (state_r)
+            S_IDLE: if (ap_start)    state_w = S_LOAD;
+            S_LOAD: if (ss_tvalid)   state_w = S_CALC;
+            S_CALC: if (calc_done)   state_w = S_SEND;
+            S_SEND: begin
+                if (sm_tready) begin
+                    if (last_r)      state_w = S_DONE;
+                    else             state_w = S_LOAD;
+                end
+            end
+            S_DONE: if (ap_done_ack) state_w = S_IDLE;
+            default:                 state_w = state_r;
+        endcase
+    end
     always @(posedge axis_clk or negedge axis_rst_n) begin
-        if (!axis_rst_n | state==LAST) begin
-            last_signal <= 1'b0;
-        end
-        else if ((tlast_counter + 1) == data_length) begin
-            last_signal <= 1'b1;
-        end
+        if (!axis_rst_n) state_r <= S_IDLE;
+        else             state_r <= state_w;
     end
-
-	reg [6:0]               tlast_counter;
-    assign ss_tlast = (tlast_counter == data_length) ? 1'b1 : 1'b0;
-
-	// tlast counter
-	always @(posedge axis_clk or negedge axis_rst_n) begin
-        if (!axis_rst_n | tlast_counter==7'd64) begin
-            tlast_counter <= 7'd0;
-        end
-        else if (ss_tvalid & ss_tready) begin
-            tlast_counter <= tlast_counter + 1;
-        end
-        else begin
-            tlast_counter <= tlast_counter;
-        end
-    end
-
+    // fir counter
     always @(posedge axis_clk or negedge axis_rst_n) begin
-		if (!axis_rst_n) begin
-			state <= RESET;
-		end
-		else begin
-			state <= next_state;
-		end
-	end
-	
-    always @(*) begin 
-        case (state)
-            RESET: begin 
-                next_state = INIT;
-            end
-            INIT: begin 
-                if(Write_addr == 10) begin 
-                    next_state = IDLE;
-                end
-                else begin 
-                    next_state = INIT;
-                end
-            end
-            IDLE: begin 
-                if (ap_start) begin 
-                    next_state = WAIT;
-                end
-                else begin 
-                    next_state = IDLE;
-                end
-            end
-            WAIT: begin 
-                if (ss_tvalid) begin
-                    if (last_signal) begin 
-                        next_state = LAST;
-                    end
-                    else begin
-                        next_state = CALC;
-                    end
-                end
-                else begin
-                    next_state = WAIT;
-                end
-            end
-            CALC: begin 
-                if (Tap_addr == 10) begin 
-                    next_state = WAIT;
-                end
-                else begin 
-                    next_state = CALC;
-                end
-            end
-            LAST: begin 
-                if (Tap_addr == 10) begin 
-                    next_state = DONE;
-                end
-                else begin 
-                    next_state = LAST;
-                end
-            end
-            
-            DONE: begin
-                if (sm_hs) begin 
-                    next_state = INIT;
-                end
-                else begin 
-                    next_state = DONE;
-                end
-            end
-            default: begin 
-                next_state = RESET;
-            end
-        endcase
-    end
-
-    always @(posedge axis_clk or negedge axis_rst_n) begin 
-        if(!axis_rst_n) begin 
-            Tap_addr   <= 0;
-            Data_addr  <= 0;
-            Write_addr <= 0;
-            counter <= 0;
-        end
-        else begin 
-            Tap_addr   <= next_Tap_addr;
-            Data_addr  <= next_Data_addr;
-            Write_addr <= next_Write_addr;
-            counter    <= next_counter;
+        if (!axis_rst_n)   i_r <= 0;
+        else if (state_r == S_CALC) begin
+            if (calc_done) i_r <= 0;
+            else           i_r <= i_r + 1;
         end
     end
-
-    always @(*) begin 
-        case (state)
-            RESET: begin 
-                next_Tap_addr = 0;
-            end
-            INIT: begin 
-                next_Tap_addr = 0;
-            end
-            IDLE: begin 
-                next_Tap_addr = 0;
-            end
-            WAIT: begin 
-                next_Tap_addr = 0;
-            end
-            CALC: begin 
-                if (Tap_addr == 10) begin 
-                    next_Tap_addr = 0;
-                end
-                else begin 
-                    next_Tap_addr = Tap_addr + 1;
-                end
-            end
-            LAST: begin 
-                if (Tap_addr == 10) begin 
-                    next_Tap_addr = 0;
-                end
-                else begin 
-                    next_Tap_addr = Tap_addr + 1; //
-                end
-            end
-            DONE: begin 
-                next_Tap_addr = 0;
-            end
-        endcase
+    // fir write addr
+    always @(posedge axis_clk or negedge axis_rst_n) begin
+        if (!axis_rst_n)             waddr_r <= 0;
+        else if (send_done) begin
+            if (waddr_r == MAX_ADDR) waddr_r <= 0;
+            else                     waddr_r <= waddr_r + 12'h04;
+        end
+    end
+    // fir first ten data
+    always @(posedge axis_clk or negedge axis_rst_n) begin
+        if (!axis_rst_n)              first_ten_data_r <= 1;
+        else if (waddr_r == MAX_ADDR) first_ten_data_r <= 0;
+    end
+    // fir last data
+    always @(posedge axis_clk or negedge axis_rst_n) begin
+        if (!axis_rst_n)    last_r <= 0;
+        else if (load_done) last_r <= ss_tlast;
+    end
+    // fir shift add reg
+    always @(posedge axis_clk or negedge axis_rst_n) begin
+        acc_r <= add_o;
+        if (!axis_rst_n)                        acc_r <= 0;
+        else if (state_r == S_CALC && i_r == 0) acc_r <= 0; // reset or new data
     end
 
-    always @(*) begin 
-        case (state)
-            RESET: begin 
-                next_Data_addr = 0;
-            end
-            INIT: begin 
-                next_Data_addr = 0;
-            end
-            IDLE: begin 
-                next_Data_addr = 0;
-            end
-            WAIT: begin 
-                next_Data_addr = Write_addr;
-            end
-            CALC: begin 
-                if (Data_addr == 0) begin 
-                    next_Data_addr = 10;
-                end
-                else begin 
-                    next_Data_addr = Data_addr -1;
-                end
-            end
-            LAST: begin 
-                if (Data_addr == 0) begin 
-                    next_Data_addr = 10;
-                end
-                else begin 
-                    next_Data_addr = Data_addr -1;
-                end
-            end
-            DONE: begin 
-                next_Data_addr = 0;
-            end
+    mul #(.pDATA_WIDTH (pDATA_WIDTH)) mul_0
+    (
+        .a (mul_a),
+        .b (mul_b),
+        .p (mul_o)
+    );
+
+    add #(.pDATA_WIDTH (pDATA_WIDTH)) add_0
+    (
+        .a (add_a),
+        .b (add_b),
+        .s (add_o)
+    );
+
+    axilite #(
+        .pADDR_WIDTH (pADDR_WIDTH),
+        .pDATA_WIDTH (pDATA_WIDTH),
+        .Tape_Num    (Tape_Num   )
+    ) axilite_0
+    (
+        // from / to fir_tb
+        .awready     (awready    ),
+        .wready      (wready     ),
+        .awvalid     (awvalid    ),
+        .awaddr      (awaddr     ),
+        .wvalid      (wvalid     ),
+        .wdata       (wdata      ),
+        .arready     (arready    ),
+        .rready      (rready     ),
+        .arvalid     (arvalid    ),
+        .araddr      (araddr     ),
+        .rvalid      (rvalid     ),
+        .rdata       (rdata      ),
+        .tap_WE      (axi_tap_we ),
+        .tap_Di      (tap_Di     ),
+        .tap_A       (axi_tap_a  ),
+        .tap_Do      (tap_Do     ),
+        // from / to fir
+        .ap_start    (ap_start   ),
+        .ap_ready    (ap_ready   ),
+        .ap_done     (ap_done    ),
+        .ap_idle     (ap_idle    ),
+        .data_len    (data_len   ),
+        .ap_done_ack (ap_done_ack),
+        // clock and reset
+        .axis_clk    (axis_clk   ),
+        .axis_rst_n  (axis_rst_n )
+    );
+
+endmodule
+
+module axilite
+#(
+    parameter pADDR_WIDTH = 12,
+    parameter pDATA_WIDTH = 32,
+    parameter Tape_Num    = 11
+)
+(
+    // from / to fir_tb
+    output  wire                     awready,
+    output  wire                     wready,
+    input   wire                     awvalid,
+    input   wire [(pADDR_WIDTH-1):0] awaddr,
+    input   wire                     wvalid,
+    input   wire [(pDATA_WIDTH-1):0] wdata,
+    output  wire                     arready,
+    input   wire                     rready,
+    input   wire                     arvalid,
+    input   wire [(pADDR_WIDTH-1):0] araddr,
+    output  wire                     rvalid,
+    output  wire [(pDATA_WIDTH-1):0] rdata,
+    output  wire [3:0]               tap_WE,
+    output  wire [(pDATA_WIDTH-1):0] tap_Di,
+    output  wire [(pADDR_WIDTH-1):0] tap_A,
+    input   wire [(pDATA_WIDTH-1):0] tap_Do,
+    // from / to fir
+    output  wire                     ap_start,
+    input   wire                     ap_ready,
+    input   wire                     ap_done,
+    input   wire                     ap_idle,
+    output  wire [(pDATA_WIDTH-1):0] data_len,
+    output  wire                     ap_done_ack,
+    // clock and reset
+    input   wire                     axis_clk,
+    input   wire                     axis_rst_n
+);
+
+    // addr decode
+    localparam ADDR_AP_CTRL   = 12'h00;
+    localparam ADDR_DATA_LEN  = 12'h10;
+    // localparam ADDR_TAP_BEGIN = 12'h20;
+    localparam ADDR_TAP_BEGIN = 12'h80; // optimize
+    localparam ADDR_TAP_END   = 12'hFF;
+
+    // write state
+    localparam WRIDLE  = 1'd0;
+    localparam WRDATA  = 1'd1;
+    // read state
+    localparam RDIDLE  = 1'd0;
+    localparam RDDATA  = 1'd1;
+
+    // write ctrl signal
+    reg  wstate_r, wstate_w;
+    wire aw_hs, w_hs; // handshake signal
+    wire ctrl_w_hs, len_w_hs, tap_w_hs;
+    // write data signal
+    reg [(pADDR_WIDTH-1):0] waddr_r;    // store addr to wait for w_hs
+    reg                     ap_start_r; // tb config write
+    reg [(pDATA_WIDTH-1):0] data_len_r; // tb config write
+    // write wire assignment
+    assign aw_hs     = (awvalid & awready);
+    assign w_hs      = (wvalid & wready);
+    assign ctrl_w_hs = (w_hs && waddr_r == ADDR_AP_CTRL);
+    assign len_w_hs  = (w_hs && waddr_r == ADDR_DATA_LEN);
+    assign tap_w_hs  = (w_hs && waddr_r <= ADDR_TAP_END && waddr_r >= ADDR_TAP_BEGIN);
+
+    // read ctrl signal
+    reg  rstate_r, rstate_w;
+    wire ar_hs; // handshake signal
+    wire ctrl_ar_hs, len_ar_hs, tap_ar_hs;
+    reg  ctrl_ar_hs_r, tap_ar_hs_r;
+    // read data signal
+    wire [(pADDR_WIDTH-1):0] tap_addr;
+    reg  [(pDATA_WIDTH-1):0] rdata_r; // store data to wait for rready
+    // read wire assignment
+    assign ar_hs      = (arvalid & arready);
+    assign ctrl_ar_hs = (ar_hs && araddr == ADDR_AP_CTRL);
+    assign len_ar_hs  = (ar_hs && araddr == ADDR_DATA_LEN);
+    assign tap_ar_hs  = (ar_hs && araddr <= ADDR_TAP_END && araddr >= ADDR_TAP_BEGIN);
+    assign tap_addr   = (tap_w_hs) ? waddr_r : araddr;
+
+    // output assignment
+    assign awready     = (wstate_r == WRIDLE);
+    assign wready      = (wstate_r == WRDATA);
+    assign arready     = (rstate_r == RDIDLE);
+    assign rvalid      = (rstate_r == RDDATA);
+    assign rdata       = (tap_ar_hs_r) ? tap_Do : rdata_r;
+    assign tap_WE      = (tap_w_hs) ? 4'b1111 : 4'b0000;
+    assign tap_Di      = wdata;
+    // assign tap_A       = tap_addr - ADDR_TAP_BEGIN;
+    assign tap_A       = {tap_addr[(pADDR_WIDTH-1):(pADDR_WIDTH-4)], 1'b0, tap_addr[(pADDR_WIDTH-6):0]}; // optimize
+    assign data_len    = data_len_r;
+    assign ap_start    = ap_start_r;
+    assign ap_done_ack = ctrl_ar_hs_r;
+
+
+    // write state machine
+    always @(*) begin
+        wstate_w = wstate_r;
+        case (wstate_r)
+            WRIDLE: if (awvalid) wstate_w = WRDATA;
+            WRDATA: if (wvalid)  wstate_w = WRIDLE;
+            default:             wstate_w = wstate_r;
         endcase
     end
-
-    always @(*) begin 
-        case (state)
-            RESET: begin 
-                next_Write_addr = 0;
-            end
-            INIT: begin 
-                if (Write_addr == 10) begin 
-                    next_Write_addr = 0;
-                end
-                else begin
-                    next_Write_addr = Write_addr + 1;
-                end
-            end
-            IDLE: begin 
-                next_Write_addr = 0;
-            end
-            WAIT: begin 
-                if (ss_tvalid) begin 
-                    next_Write_addr =(Write_addr==10)? 0:(Write_addr+1);
-                end
-                else begin
-                    next_Write_addr = Write_addr;
-                end
-            end
-            CALC: begin 
-                next_Write_addr = Write_addr;
-            end
-            LAST: begin 
-                next_Write_addr = Write_addr;
-            end
-            DONE: begin 
-                next_Write_addr = 0;
-            end
-        endcase
+    always @(posedge axis_clk or negedge axis_rst_n) begin
+        if (!axis_rst_n) wstate_r <= WRIDLE;
+        else             wstate_r <= wstate_w;
+    end
+    // write addr
+    always @(posedge axis_clk or negedge axis_rst_n) begin
+        if (!axis_rst_n) waddr_r <= 0;
+        else if (aw_hs)  waddr_r <= awaddr;
+    end
+    // write data - ap_start
+    always @(posedge axis_clk or negedge axis_rst_n) begin
+        if (!axis_rst_n)              ap_start_r <= 1'b0;
+        else if (ctrl_w_hs & ap_idle) ap_start_r <= wdata[0];
+        else if (ap_ready)            ap_start_r <= 1'b0;
+    end
+    // write data - data length
+    always @(posedge axis_clk or negedge axis_rst_n) begin
+        if (!axis_rst_n)   data_len_r <= 0;
+        else if (len_w_hs) data_len_r <= wdata;
     end
 
-    always @(*) begin 
-        case (state)
-            RESET: begin 
-                next_counter = 0;
-            end
-            INIT: begin 
-                next_counter = 0;
-            end
-            IDLE: begin 
-                next_counter = 0;
-            end
-            WAIT: begin 
-                if (counter == 11) begin
-                    next_counter = 12;
-                end
-                else if(counter == 12) begin
-                    next_counter = 13;
-                end
-                else if(counter == 13) begin
-                    next_counter = 14;
-                end
-                else if(counter == 14) begin
-                    if (sm_tready==1) begin
-                     next_counter = 15;
-                    end
-                    else begin 
-                    
-                    next_counter = 14;
-                    end
-                end
-                else begin 
-                    next_counter = 0;
-                end
-            end
-            CALC: begin 
-                if (counter == 15) begin 
-                    next_counter = Tap_addr + 1;
-                end
-                else begin 
-                    next_counter = counter + 1;
-                end
-            end
-            LAST: begin 
-                if (counter == 15) begin 
-                    next_counter = Tap_addr + 1;
-                end
-                else begin 
-                    next_counter = counter + 1;
-                end
-            end
-            DONE: begin 
-                if (counter == 11) begin
-                    next_counter = 12;
-                end
-                else if(counter == 12) begin
-                    next_counter = 13;
-                end
-                else if(counter == 13) begin
-                    next_counter = 14;
-                end
-                else if(counter == 14) begin
-                    if (sm_tready==1) begin
-                     next_counter = 15;
-                    end
-                    else begin 
-                    
-                    next_counter = 14;
-                    end
-                end
-                else begin 
-                    next_counter = 0;
-                end
-            end
+    // read state machine
+    always @(*) begin
+        rstate_w = rstate_r;
+        case (rstate_r)
+            RDIDLE: if (arvalid) rstate_w = RDDATA;
+            RDDATA: if (rready)  rstate_w = RDIDLE; // rvalid is also high
+            default:             rstate_w = rstate_r;
         endcase
     end
-
-    always @(*) begin 
-        case (state)
-            RESET: begin 
-                data_Di_reg = 0;
-            end
-            INIT: begin 
-                data_Di_reg = 0;
-            end
-            IDLE: begin 
-                data_Di_reg = 0;
-            end
-            WAIT: begin 
-                data_Di_reg = ss_tdata;
-            end
-            CALC: begin 
-                data_Di_reg = 0;
-            end
-            LAST: begin 
-                data_Di_reg = 0;
-            end
-            DONE: begin 
-                data_Di_reg = 0;
-            end
-        endcase
+    always @(posedge axis_clk or negedge axis_rst_n) begin
+        if (!axis_rst_n) rstate_r <= RDIDLE;
+        else             rstate_r <= rstate_w;
+    end
+    // read data - tap ctrl, ap_done ack
+    always @(posedge axis_clk or negedge axis_rst_n) begin
+        if (!axis_rst_n) begin
+            ctrl_ar_hs_r <= 0;
+            tap_ar_hs_r  <= 0;
+        end
+        else if (ctrl_ar_hs)             ctrl_ar_hs_r <= 1;
+        else if (ctrl_ar_hs_r && rready) ctrl_ar_hs_r <= 0;
+        else                             tap_ar_hs_r  <= tap_ar_hs; // assert for 1 cycle only
+    end
+    // read data - ap_start, ap_done, ap_idle, data_length
+    always @(posedge axis_clk or negedge axis_rst_n) begin
+        if (!axis_rst_n)      rdata_r      <= 0;
+        else if (ctrl_ar_hs)  rdata_r[2:0] <= {ap_idle, ap_done, ap_start_r};
+        else if (len_ar_hs)   rdata_r      <= data_len_r;
+        else if (tap_ar_hs_r) rdata_r      <= tap_Do;
     end
 
-    always @(*) begin 
-        case (state)
-            RESET: begin 
-                addr_reg = 0;
-            end
-            INIT: begin 
-                addr_reg = Write_addr;
-            end
-            IDLE: begin 
-                addr_reg = 0;
-            end
-            WAIT: begin 
-                addr_reg = Write_addr;
-            end
-            CALC: begin 
-                addr_reg = Data_addr;
-            end
-            LAST: begin 
-                addr_reg = Data_addr;
-            end
-            DONE: begin 
-                addr_reg = 0;
-            end
-        endcase
-    end
-        axilite AXILITE(
-        .awready(awready),
-        .wready(wready),
-        .awvalid(awvalid),
-        .awaddr(awaddr),
-        .wvalid(wvalid),
-        .wdata(wdata),
-        .arready(arready),
-        .rready(rready),
-        .arvalid(arvalid),
-        .araddr(araddr),
-        .rvalid(rvalid),
-        .rdata(rdata),
-        .tap_WE(tap_WE),
-        .tap_EN(tap_EN),
-        .tap_Di(tap_Di),
-        .tap_A(tap_A),
-        .tap_Do(tap_Do),
-        .ap_start(ap_start),
-        .ap_idle(ap_idle),
-        .ap_done(ap_done),
-        .data_length(data_length),
-        .fir_raddr(Tap_addr),
-        .axis_clk(axis_clk),
-        .axis_rst_n(axis_rst_n),
-        .state_o(state),
-        .counter(counter),
-        .sm_tlast(sm_tlast)
-        );
+endmodule
 
-    calc_pipeline calculate(
-        .data_Do(data_Do),
-        .tap_Do(tap_Do),
-        .Data_control(DD_output_control),
-        .Tape_control(TD_output_control),
-        .adder_rst_control(adder_rst_control),
-        .output_control(output_control),
-        .axis_clk(axis_clk),
-        .axis_rst_n(axis_rst_n),
-        .sm_tdata(sm_tdata),
-        .cal_rst_n(cal_rst_n)
-        );
+module mul
+#(
+    parameter pDATA_WIDTH = 32
+)
+(
+    input  wire [(pDATA_WIDTH-1):0] a,
+    input  wire [(pDATA_WIDTH-1):0] b,
+    output wire [(pDATA_WIDTH-1):0] p
+);
+    assign p = $signed(a) * $signed(b);
+
+endmodule
+
+module add
+#(
+    parameter pDATA_WIDTH = 32
+)
+(
+    input  wire [(pDATA_WIDTH-1):0] a,
+    input  wire [(pDATA_WIDTH-1):0] b,
+    output wire [(pDATA_WIDTH-1):0] s
+);
+
+    assign s = $signed(a) + $signed(b);
 
 endmodule
