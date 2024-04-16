@@ -1,0 +1,10 @@
+Reading counter_la.hex
+counter_la.hex loaded into memory
+Memory 5 bytes = 0x6f 0x00 0x00 0x0b 0x13
+VCD info: dumpfile counter_la.vcd opened for output.
+Info: Detect check bits (16'hAB40) on reg_mprj_datal[31:16], start testing!
+
+++++++++++ Step 1: FIR & MM && QS hardware accelerator initialization ++++++++++
+[1;31m
+Monitor: Timeout, Test LA (RTL) Failed
+[0m
