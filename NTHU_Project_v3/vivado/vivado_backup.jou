@@ -1,0 +1,13 @@
+#-----------------------------------------------------------
+# Vivado v2022.1 (64-bit)
+# SW Build 3526262 on Mon Apr 18 15:47:01 MDT 2022
+# IP Build 3524634 on Mon Apr 18 20:55:01 MDT 2022
+# Start of session at: Thu Apr 25 01:58:47 2024
+# Process ID: 129663
+# Current directory: /home/samchang/NTHU_Project_v3/vivado
+# Command line: vivado -source vvd_caravel_fpga_40mhz.tcl -mode tcl
+# Log file: /home/samchang/NTHU_Project_v3/vivado/vivado.log
+# Journal file: /home/samchang/NTHU_Project_v3/vivado/vivado.jou
+# Running On: samchang-System-Product-Name, OS: Linux, CPU Frequency: 2100.000 MHz, CPU Physical cores: 16, Host memory: 33376 MB
+#-----------------------------------------------------------
+source vvd_caravel_fpga_40mhz.tcl
