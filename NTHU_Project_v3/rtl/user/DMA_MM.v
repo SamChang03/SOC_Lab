@@ -44,6 +44,7 @@ module DMA_MM
     wire [31:0] MM_output_buffer13;
     wire [31:0] MM_output_buffer14;
     wire [31:0] MM_output_buffer15;
+    
     wire [31:0] MM_input_buffer0;
     wire [31:0] MM_input_buffer1;
     wire [31:0] MM_input_buffer2;
@@ -65,6 +66,7 @@ module DMA_MM
     assign MM_output_buffer13=output_buffer[13];
     assign MM_output_buffer14=output_buffer[14];
     assign MM_output_buffer15=output_buffer[15];
+    
     assign MM_input_buffer0=input_buffer[0];
     assign MM_input_buffer1=input_buffer[1];
     assign MM_input_buffer2=input_buffer[2];
