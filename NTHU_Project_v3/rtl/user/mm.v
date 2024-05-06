@@ -24,7 +24,6 @@ module mm
     //output  wire                     sm_tlast, //not used
 );
 
-// Design by yuhungwei, testbench by zeus950068, modified by whywhytellmewhy
 localparam IDLE = 4'd0;
 localparam WAIT_MATRIX_A1_HANDSHAKE = 4'd1;
 localparam INPUT_MATRIX_A_row1= 4'd2;
@@ -468,6 +467,4 @@ always @(*) begin
         end
     endcase
 end
-    
-
 endmodule
