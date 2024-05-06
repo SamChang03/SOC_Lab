@@ -44,7 +44,7 @@ reg [(pnext_ARRAYIDTH-1):0] sm_tdata_before_FF;
 
 reg         [3:0]           n_state;
 reg         [3:0]           c_state;
-//ARRAY A * ARRAY B == ARRAY C
+
 reg         [4:0]           cnt_IO, next_cnt_IO; //for 10 cycles
 reg         [3:0]           cnt_sort, next_cnt_sort; //for 7 cycles
 
@@ -79,8 +79,6 @@ wire  [(pnext_ARRAYIDTH-1):0] sort_out1 [0:4], sort_out2 [0:4];
     assign ARRAY8=ARRAY[8];
     assign ARRAY9=ARRAY[9];
 
-
-    //assign test1=(wbs_adr_i[7:0]==8'h88);
     //////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -102,8 +100,9 @@ generate
 endgenerate
 
 
-
-
+/////////////////////////////////////////////
+///Sorting Engine
+/////////////////////////////////////////////
 always @(*)begin
    if (c_state == SORT_ARRAY) begin // ref : https://bertdobbelaere.github.io/sorting_networks.html#N11L35D8
         case (cnt_sort)
