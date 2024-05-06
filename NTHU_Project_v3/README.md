@@ -7,7 +7,7 @@
 - [張育碩](https://github.com/SamChang03)
 
 # Caravel SoC
-Caravel SoC is a platform for developing RISC-V CPU based hardware and software referred from [Efabless Caravel “harness” SoC](https://caravel-harness.readthedocs.io/en/latest/#efabless-caravel-harness-soc). You can develop and integrate custom design into this platform, then vefify their functionality with open source toolchain.
+Caravel SoC is a platform for developing RISC-V CPU based hardware and software referred from [Efabless Caravel “harness” SoC](https://caravel-harness.readthedocs.io/en/latest/#efabless-caravel-harness-soc). You can develop and integrate custom design into this platform, then vefify their functionality with open source toolchain.  
 ![Caravel SoC](https://drive.google.com/file/d/1BHkNMGrbxTgqNbNhZ2pyIwUX_KYCqpba/view?usp=drive_link)
 
 
