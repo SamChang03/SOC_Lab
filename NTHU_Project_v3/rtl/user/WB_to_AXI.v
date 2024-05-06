@@ -43,52 +43,6 @@ module WB_to_AXI #(
     input  wire                     sm_tlast
 );
 
-/*=awready
-=wready
-awvalid=
-awaddr=
-wvalid=
-wdata=
-=arready
-rready=
-arvalid=
-araddr=
-=rvalid
-=rdata
-
-ss_tvalid=
-ss_tdata=
-ss_tlast=
-=ss_tready
-
-sm_tready=
-=sm_tvalid
-=sm_tdata
-=sm_tlast*/
-
-/*assign =awready;
-assign =wready;
-assign awvalid=axi_awvalid;
-assign awaddr=axi_waddr;
-assign wvalid=axi_wvalid;
-assign wdata=axi_wdata;
-assign =arready;
-assign rready=;
-assign arvalid=;
-assign araddr=axi_raddr;
-assign axi_rvalid=rvalid;
-assign axi_rdata=rdata;
-
-assign ss_tvalid=ss_tvalid;
-assign ss_tdata=ss_tdata;
-assign ss_tlast=;
-assign =ss_tready;
-
-assign sm_tready=sm_tready;
-assign sm_tvalid=sm_tvalid;
-assign sm_tdata=sm_tdata;
-assign =sm_tlast;*/
-
 reg AXI_Lite_valid;
 reg AXI_ss_valid;
 reg AXI_sm_valid;
@@ -116,8 +70,6 @@ end
 
 ////////////////////////// For debugging //////////////////////////
 wire debug;
-//assign debug = wbs_cyc_i && wbs_stb_i && (wbs_adr_i[7:0] == 8'h84);
-//assign debug = wbs_cyc_i && wbs_stb_i && (wbs_adr_i[31:20] == 12'h300);
 assign debug = wbs_cyc_i && wbs_stb_i && (wbs_adr_i[31:20] == 12'h300) && (wbs_adr_i[7:0] == 8'h00);
 
 wire debug_ss;
@@ -126,15 +78,6 @@ assign debug_ss = wbs_cyc_i && wbs_stb_i && (wbs_adr_i[31:20] == 12'h300) && (wb
 assign debug_sm = wbs_cyc_i && wbs_stb_i && (wbs_adr_i[31:20] == 12'h300) && (wbs_adr_i[7:0] == 8'h84);
 
 ///////////////////////////////////////////////////////////////////
-
-/////wire wbs_ack_o_before_FF;
-/////wire [31:0] wbs_dat_o_before_FF;
-
-/////assign wbs_ack_o_before_FF=wbs_ack_Lite_before_FF;
-/////assign wbs_dat_o_before_FF=wbs_dat_Lite_before_FF;
-
-//assign wbs_ack_o=wbs_ack_Lite;
-//assign wbs_dat_o=wbs_dat_Lite;
 
 always @* begin
     if(wbs_cyc_i && wbs_stb_i && (wbs_adr_i[7:0] <= 8'h7F)) begin
@@ -211,7 +154,6 @@ always @* begin
                     wvalid_before_FF=0;
                     wdata_before_FF=wbs_dat_i;
                     arvalid_before_FF=1;
-                    //araddr_before_FF=1;
                     rready_before_FF=0;
                 end
 
@@ -223,7 +165,6 @@ always @* begin
                 wvalid_before_FF=0;
                 wdata_before_FF=wbs_dat_i;
                 arvalid_before_FF=0;
-                //araddr_before_FF=0;
                 rready_before_FF=0;
                 next_delay_counter=0;
             end
@@ -346,21 +287,6 @@ always @* begin
             next_delay_counter=0;
         end
         default:begin
-            /*next_state_Lite=
-            wbs_ack_Lite_before_FF=
-            wbs_dat_Lite_before_FF=
-
-            awvalid_before_FF=
-            awaddr_before_FF=
-            wvalid_before_FF=
-            wdata_before_FF=
-            arvalid_before_FF=
-            araddr_before_FF=
-            rready_before_FF=
-
-            //next_Yn_valid_Xn_ready=
-            next_delay_counter=*/
-
             next_state_Lite=Lite_IDLE;
             wbs_ack_Lite_before_FF=0;
             wbs_dat_Lite_before_FF=0;
@@ -392,7 +318,6 @@ always@(posedge wb_clk_i) begin
         araddr <= 0;
         rready <= 0;
         delay_counter <= 0;
-        //Yn_valid_Xn_ready <= 0;
     end
     else begin
         state_Lite <= next_state_Lite;
@@ -409,18 +334,6 @@ always@(posedge wb_clk_i) begin
         //Yn_valid_Xn_ready <= next_Yn_valid_Xn_ready;
     end
 end
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /////////////////////////////////////// AXI Stream (ss) for x[n] ///////////////////////////////////////
@@ -571,24 +484,6 @@ always @* begin
     endcase
 end
 
-//always @* begin
-    /*if(state_Stream_ss==Stream_ss_IDLE) begin
-        next_delay_counter_Stream_ss=1;
-    end
-    else begin
-        next_delay_counter_Stream_ss=delay_counter_Stream_ss+1;
-    end
-
-    if(delay_counter_Stream_ss == DELAYS) begin
-        wbs_ack_Stream_ss_before_FF=1;
-    end
-    else begin
-        wbs_ack_Stream_ss_before_FF=0;
-    end*/
-
-//    wbs_dat_Stream_ss_before_FF=0;
-//end
-
 always@(posedge wb_clk_i) begin
     if(wb_rst_i) begin // positive reset
         state_Stream_ss <= Stream_ss_IDLE;
@@ -615,18 +510,6 @@ always@(posedge wb_clk_i) begin
         input_number_counter <= next_input_number_counter;
     end
 end
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /////////////////////////////////////// AXI Stream (sm) for y[n] ///////////////////////////////////////
