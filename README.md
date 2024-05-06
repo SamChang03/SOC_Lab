@@ -22,7 +22,7 @@ This repository contains the personal/related work for the NTHU 11210EE525100 To
 - Tools: Vitis_HLS, Vivado, MobaXterm, Jupyter Notebook
 
 # Lab03 FIR Design
-- [Lab01](https://github.com/SamChang03/SOC_Lab/tree/main/Lab03)
+- [Lab03](https://github.com/SamChang03/SOC_Lab/tree/main/Lab03)
 
 # NTHU_Project 
 - [NTHU_Project](https://github.com/SamChang03/SOC_Lab/tree/main/NTHU_Project_v3)  
