@@ -180,12 +180,8 @@ module sdram_controller (
         for (i = 0; i < 4; i = i + 1)
             row_addr_d[i] = row_addr_q[i];
 
-        // The data in the SDRAM must be refreshed periodically.
-        // This conter ensures that the data remains intact.
         refresh_flag_d = refresh_flag_q;
         refresh_ctr_d = refresh_ctr_q + 1'b1;
-        // Jiin : refresh_counter tRef_Counter
-        // if (refresh_ctr_q > 10'd750) begin
         if (refresh_ctr_q > tRef_Counter) begin
             refresh_ctr_d = 10'd0;
             refresh_flag_d = 1'b1;
@@ -221,17 +217,7 @@ module sdram_controller (
                 ba_d = 2'b0;
                 cle_d = 1'b1;
                 state_d = WAIT;
-                /////state_d = LOAD_MODE_REG; // Modified (At the end, we do not use this modification.)
-                // Note: Jiin - We can skip the power-up sequence & LMR
-                // directly jump to IDLE state
-                // Power-up Sequence
-                // 1. wait for power-up sequence, cmd - NOP or INHIBIT
-                // 2. precharge all
-                // 3. 2 x Auto-refresh
-
-                // delay_ctr_d = 16'd10100; // wait for 101us
-                // next_state_d = PRECHARGE_INIT;
-
+                
                 delay_ctr_d = 16'd0;
                 // delay_ctr_d = 16'd1;
                 next_state_d = IDLE;
@@ -241,22 +227,7 @@ module sdram_controller (
 
                 dq_en_d = 1'b0;
             end
-            //////////////////////////// (Added by us) ////////////////////////////
-            /*LOAD_MODE_REG: begin
-                /////refresh_ctr_d = 10'b1;
-                a_d = a_q;
-                
-                if (delay_ctr_q == 13'd3) begin
-                    state_d = WAIT;
-                    delay_ctr_d = 16'd0;
-                end
-                else begin
-                    state_d = LOAD_MODE_REG;
-                    cmd_d = CMD_LOAD_MODE_REG;
-                    delay_ctr_d = delay_ctr_q + 1'b1;
-                end
-            end*/
-            ///////////////////////////////////////////////////////////////////////
+            
             WAIT: begin
                 delay_ctr_d = delay_ctr_q - 1'b1;
                 if (delay_ctr_q == 13'd0) begin
