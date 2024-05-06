@@ -13,17 +13,17 @@
 - Remote network tool: MobaXterm V23.2
 
 # Directory Structure
-├── cvc-pdk                 # SKY130 OpenRAM SRAM Model
-├── firmware                # Caravel System Firmware Libraries
-├── rtl                     # Caravel RTL Designs
-│   ├── header              # Headers
-│   ├── soc                 # Boledu Revised SoC
-│   ├── user                # User Project Designs
-├── testbench               # Caravel Testbenches
-│   ├── counter_la          # Counter with Logic Analyzer Interface
-│   ├── counter_wb          # Counter with Wishbone Interface
-│   └── gcd_la              # GCD with Logic Analyzer Interface
-└── vip                     # Caravel Verification IP
+    ├── cvc-pdk                 # SKY130 OpenRAM SRAM Model
+    ├── firmware                # Caravel System Firmware Libraries
+    ├── rtl                     # Caravel RTL Designs
+    │   ├── header              # Headers
+    │   ├── soc                 # Boledu Revised SoC
+    │   ├── user                # User Project Designs
+    ├── testbench               # Caravel Testbenches
+    │   ├── counter_la          # Counter with Logic Analyzer Interface
+    │   ├── counter_wb          # Counter with Wishbone Interface
+    │   └── gcd_la              # GCD with Logic Analyzer Interface
+    └── vip                     # Caravel Verification IP
 
 
 ## Abstract
