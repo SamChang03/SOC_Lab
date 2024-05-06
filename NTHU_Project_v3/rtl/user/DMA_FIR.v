@@ -53,8 +53,6 @@ module DMA_FIR
     assign output_buffer9=output_buffer[9];
     assign output_buffer10=output_buffer[10];
 
-
-    //assign test1=(wbs_adr_i[7:0]==8'h88);
     //////////////////////////////////////////////////////////////////////////////////////////////
     
     localparam DMA_FIR_IDLE = 3'd0, DMA_FIR_BASE_ADDRESS = 3'd1, DMA_FIR_DETECT_Yn_Xn = 3'd2, DMA_FIR_STREAM_IN = 3'd3, DMA_FIR_STREAM_OUT = 3'd4, DMA_FIR_DONE = 3'd5;
@@ -174,7 +172,6 @@ module DMA_FIR
                 data_from_FIR_before_FF=0;
 
                 next_input_buffer=input_buffer;
-                //next_input_buffer_valid=input_buffer_valid;
                 next_input_number_counter=input_number_counter;
 
                 if(input_buffer_valid==0) begin
@@ -203,7 +200,6 @@ module DMA_FIR
                 data_from_FIR_before_FF=0;
 
                 next_input_buffer=input_buffer;
-                //next_input_buffer_valid=input_buffer_valid;
                 next_input_number_counter=0;
 
             end
@@ -288,7 +284,6 @@ module DMA_FIR
                 if((wbs_ack_FIR_to_DMA==1) && (output_data_FIR_to_DMA[5]==1)) begin  // output_data_FIR_to_DMA[5] means Yn_valid
                     next_state_DMA_FIR=DMA_FIR_STREAM_OUT;
                 end
-                //else if((wbs_ack_FIR_to_DMA==1) && (output_data_FIR_to_DMA[1]==1)) begin  // output_data_FIR_to_DMA[1] means ap_done
                 else if((wbs_ack_FIR_to_DMA==1) && (output_data_FIR_to_DMA[2]==1)) begin  // output_data_FIR_to_DMA[2] means ap_idle
                     next_state_DMA_FIR=DMA_FIR_DONE;
                 end
@@ -487,14 +482,12 @@ module DMA_FIR
     wire                        sm_tvalid;
     wire signed [(pDATA_WIDTH-1) : 0] sm_tdata;
     wire                        sm_tlast;
-    /////wire                        axis_clk;
-    /////wire                        axis_rst_n;
-    // ram for tap
     wire                     tap_WE_merge;
     wire                     tap_RE;
     wire [(pDATA_WIDTH-1):0] tap_Di;
     wire [(pADDR_WIDTH-1):0] tap_A_shifted;
     wire [(pDATA_WIDTH-1):0] tap_Do;
+    
     // ram for data RAM
     wire                     data_WE_merge;
     wire                     data_RE;
