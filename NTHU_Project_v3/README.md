@@ -48,4 +48,5 @@ accelerate three workloads (FIR, MM, and QS) by implementing them into hardware,
 comparing the results with the baseline firmware execution.
 
 ## System Overview
+![System Overview](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/%E6%BC%94%E7%AE%97%E6%B3%95%E6%9E%B6%E6%A7%8B.png)
 
