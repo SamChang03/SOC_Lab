@@ -365,7 +365,6 @@ always @* begin
     case(state_Stream_ss)
         Stream_ss_IDLE: begin // input_x_buffer is out-of-date / has been used
             wbs_ack_Stream_ss_before_FF=0;
-            //wbs_dat_Stream_ss_before_FF=0;
             ss_tvalid_before_FF=0;
             ss_tdata_before_FF=0;
             ss_tlast_before_FF=0;
@@ -374,32 +373,13 @@ always @* begin
 
             if(AXI_ss_valid==1) begin
                 next_state_Stream_ss=Stream_ss_WAIT_FOR_COUNTER;
-
-                //ss_tvalid_before_FF=1;
-                //ss_tdata_before_FF=wbs_dat_i;
-                //if(input_number_counter==DATA_LENGTH-1) begin
-                //    ss_tlast_before_FF=1;
-                //end
-                //else begin
-                //    ss_tlast_before_FF=0;
-                //end
-
-                //next_Yn_valid_Xn_ready[0]=0;
                 next_input_x_buffer=wbs_dat_i;
                 next_delay_counter_Stream_ss=delay_counter_Stream_ss+1;
-                //next_input_number_counter=input_number_counter+1;
             end
             else begin
                 next_state_Stream_ss=Stream_ss_IDLE;
-
-                //ss_tvalid_before_FF=0;
-                //ss_tdata_before_FF=0;
-                //ss_tlast_before_FF=0;
-
-                //next_Yn_valid_Xn_ready[0]=1;
                 next_input_x_buffer=0;
                 next_delay_counter_Stream_ss=0;
-                //next_input_number_counter=input_number_counter;
             end
         end
         Stream_ss_WAIT_FOR_COUNTER: begin
