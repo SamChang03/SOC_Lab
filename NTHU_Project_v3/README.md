@@ -54,4 +54,4 @@ comparing the results with the baseline firmware execution.
 ![QOS](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/QoS.png)
 
 ## Utilization Table
-![Utilization Table](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/Utilization Table.png)
+![Utilization Table](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/Utilization%20Table.png)
