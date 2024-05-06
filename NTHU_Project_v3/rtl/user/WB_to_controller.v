@@ -74,10 +74,7 @@ module WB_to_controller (
     assign bram_mask = wbs_sel_i & {4{wbs_we_i}};
     assign CPU_address = wbs_adr_i[22:0];
 
-
-    //assign clk = (~la_oenb[64]) ? la_data_in[64]: wb_clk_i;
     assign clk = wb_clk_i;
-    //assign rst = (~la_oenb[65]) ? la_data_in[65]: wb_rst_i;
     assign rst = wb_rst_i;
     assign rst_n = ~rst;
 
@@ -106,8 +103,6 @@ module WB_to_controller (
     wire controller_in_valid;
     wire controller_out_valid;
     wire controller_prefetch_step;
-
-
 
     SDRAM_arbiter user_sdram_arbiter (
         .clk(clk),
@@ -203,10 +198,6 @@ module WB_to_controller (
         .Dqi(c2d_data),
         .Dqo(d2c_data)
     );
-
-
-    
-
 
 endmodule
 
