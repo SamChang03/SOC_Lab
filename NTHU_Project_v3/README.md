@@ -12,7 +12,21 @@
 - FPGA boards: Xilinx PYNQ-Z2 / ZYSOC KV260 / BASYS3
 - Remote network tool: MobaXterm V23.2
 
-# Abstract
+# Directory Structure
+├── cvc-pdk                 # SKY130 OpenRAM SRAM Model
+├── firmware                # Caravel System Firmware Libraries
+├── rtl                     # Caravel RTL Designs
+│   ├── header              # Headers
+│   ├── soc                 # Boledu Revised SoC
+│   ├── user                # User Project Designs
+├── testbench               # Caravel Testbenches
+│   ├── counter_la          # Counter with Logic Analyzer Interface
+│   ├── counter_wb          # Counter with Wishbone Interface
+│   └── gcd_la              # GCD with Logic Analyzer Interface
+└── vip                     # Caravel Verification IP
+
+
+## Abstract
 SoC (System on Chip) is a complete computer system on a chip, which includes a 
 microprocessor, memory, peripherals, and other necessary components for a specific 
 application. This integration presents numerous advantages, such as compact size, 
@@ -28,5 +42,5 @@ conclusion, we gain valuable insights into software-hardware codesign, employing
 accelerate three workloads (FIR, MM, and QS) by implementing them into hardware, 
 comparing the results with the baseline firmware execution.
 
-#System Overview
+## System Overview
 
