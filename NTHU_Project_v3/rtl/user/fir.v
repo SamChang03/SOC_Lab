@@ -51,17 +51,10 @@ module fir
     input   wire                     axis_clk,
     input   wire                     axis_rst_n
 );
-//begin
 
-    // write your code here!
 localparam IDLE = 3'd0, BRAM_RESET = 3'd1, AXI_Lite_WAIT = 3'd2, AXI_Lite_WRITE = 3'd3, AXI_Lite_READ = 3'd4, DO_FIR = 3'd5, FIR_WAIT_SM = 3'd6,FIR_LAST_ONE = 3'd7; //, DONE = 3'd7;
 
-/*
-reg [7:0] decode_text_before_FF;
-reg valid_before_FF;
-*/
 
-/////////////// Added in lab4-2 ///////////////
 wire [3:0] tap_WE;
 wire tap_EN;
 wire [3:0] data_WE;
@@ -79,15 +72,6 @@ assign tap_A_shifted = tap_A>>2;
 assign data_A_shifted = data_A>>2;
 ///////////////////////////////////////////////
 
-
-/////awready wready arready rvalid rdata 
-/////ss_tready 
-/////sm_tvalid sm_tdata sm_tlast
-/////tap_WE tap_EN tap_Di tap_A
-/////data_WE data_EN data_Di data_A
-/////reg XX_reg;
-/////reg XX_before_FF;
-/////assign XX = XX_reg;
 
 reg awready_reg;
 reg awready_before_FF;
@@ -712,34 +696,8 @@ always @* begin
                     next_counter_BRAM=counter_BRAM+1;
                 end
 
-                /*next_state=DO_FIR;
-
-                awready_before_FF=0;
-                wready_before_FF=0;
-                arready_before_FF=0;
-                    
-                ss_tready_before_FF=
-                sm_tvalid_before_FF=
-                sm_tdata_before_FF=
-                sm_tlast_before_FF=
-
-                tap_EN_reg=
-                tap_WE_reg=4'd
-                tap_Di_reg=
-                tap_A_reg=
-                data_WE_reg=4'd
-                data_EN_reg=
-                data_Di_reg=
-                data_A_reg=
-
-                next_ap_idle_done_start=
-                next_data_length=
-                rdata_reg=
-                rvalid_reg=
-                next_counter_data_number=
-                next_counter_BRAM=*/
             end
-            FIR_WAIT_SM: begin // added in lab4-2 because of a new bram11.v
+            FIR_WAIT_SM: begin 
 
                 if(sm_tvalid & sm_tready) begin
                     next_state=DO_FIR;
@@ -756,19 +714,9 @@ always @* begin
                     ss_tready_before_FF=0;
                 end
                 
-
                 awready_before_FF=0;
                 wready_before_FF=0;
                 arready_before_FF=1;
-
-                /*if((arvalid & arready) && (araddr==12'h00)) begin
-                    rdata_reg={28'd0,ap_idle_done_start};
-                    rvalid_reg=1;
-                end
-                else begin
-                    rdata_reg=0;
-                    rvalid_reg=0;
-                end*/
                 if((arvalid & arready) && (araddr==12'h00)) begin
                     rdata_reg={28'd0,ap_idle_done_start};
                     rvalid_reg=1;
@@ -881,8 +829,6 @@ always@(posedge axis_clk or negedge axis_rst_n) begin
         awready_reg <= 0;
         wready_reg <= 0;
         arready_reg <= 0;
-        /////rvalid_reg <= 0;
-        /////rdata_reg <= 0;
         last_rdata <= 0;
         last_rvalid <= 0;
         last_rready <= 0;
@@ -890,14 +836,6 @@ always@(posedge axis_clk or negedge axis_rst_n) begin
         sm_tvalid_reg <= 0;
         sm_tdata_reg <= 0;
         sm_tlast_reg <= 0;
-        /////tap_WE_reg <= 4'd0;
-        /////tap_EN_reg <= 0;
-        /////tap_Di_reg <= 0;
-        /////tap_A_reg <= 0;
-        /////data_WE_reg <= 0;
-        /////data_EN_reg <= 0;
-        /////data_Di_reg <= 0;
-        /////data_A_reg <= 0;
         last_tap_WE <= 0;
         last_tap_EN <= 0;
         last_tap_Di <= 0;
@@ -938,6 +876,4 @@ always@(posedge axis_clk or negedge axis_rst_n) begin
         data_length <= next_data_length;
     end
 end
-
-//end
 endmodule
