@@ -14,7 +14,7 @@ Caravel SoC is a platform for developing RISC-V CPU based hardware and software 
 # Toolchain and Prerequisites
 - Environment: Ubuntu 20.04
 - Applications: Xilinx Vitis 2022.1 (Vitis_HLS / Vivado), GTKWave v3.3.103
-- FPGA boards: Xilinx PYNQ-Z2 / ZYSOC KV260 / BASYS3
+- FPGA boards: Xilinx PYNQ-Z2 / ZYSOC KV260
 - Remote network tool: MobaXterm V23.2
 
 # Directory Structure
