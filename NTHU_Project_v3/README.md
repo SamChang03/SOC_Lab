@@ -25,7 +25,7 @@ comparing the results with the baseline firmware execution.
 - Applications: Xilinx Vitis 2022.1 (Vitis_HLS / Vivado), GTKWave v3.3.103
 - FPGA boards: Xilinx PYNQ-Z2 / ZYSOC KV260
 - Remote network tool: MobaXterm V23.2
-- 
+
 ## Caravel SoC
 Caravel SoC is a platform for developing RISC-V CPU based hardware and software referred from [Efabless Caravel “harness” SoC](https://caravel-harness.readthedocs.io/en/latest/#efabless-caravel-harness-soc). You can develop and integrate custom design into this platform, then vefify their functionality with open source toolchain.  
 ![Caravel SoC](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/Caravel%20SoC.png)
