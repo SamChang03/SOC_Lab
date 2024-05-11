@@ -19,7 +19,13 @@ comparing the results with the baseline firmware execution.
 - 賴瑾（Jiin Lai）
 ### Students:
 - [張育碩](https://github.com/SamChang03)
-
+- 
+# Toolchain and Prerequisites
+- Environment: Ubuntu 20.04
+- Applications: Xilinx Vitis 2022.1 (Vitis_HLS / Vivado), GTKWave v3.3.103
+- FPGA boards: Xilinx PYNQ-Z2 / ZYSOC KV260
+- Remote network tool: MobaXterm V23.2
+- 
 ## Caravel SoC
 Caravel SoC is a platform for developing RISC-V CPU based hardware and software referred from [Efabless Caravel “harness” SoC](https://caravel-harness.readthedocs.io/en/latest/#efabless-caravel-harness-soc). You can develop and integrate custom design into this platform, then vefify their functionality with open source toolchain.  
 ![Caravel SoC](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/Caravel%20SoC.png)
@@ -27,13 +33,7 @@ Caravel SoC is a platform for developing RISC-V CPU based hardware and software 
 ## Caravel SoC FPGA Development Environment
 ![Caravel SoC FPGA Development Environment](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/Caravel%20SoC%20FPGA%20Development%20Environment.png)
 
-# Toolchain and Prerequisites
-- Environment: Ubuntu 20.04
-- Applications: Xilinx Vitis 2022.1 (Vitis_HLS / Vivado), GTKWave v3.3.103
-- FPGA boards: Xilinx PYNQ-Z2 / ZYSOC KV260
-- Remote network tool: MobaXterm V23.2
-
-# Directory Structure
+## Directory Structure
     ├── cvc-pdk                 # SKY130 OpenRAM SRAM Model
     ├── firmware                # Caravel System Firmware Libraries
     ├── rtl                     # Caravel RTL Designs
@@ -47,19 +47,23 @@ Caravel SoC is a platform for developing RISC-V CPU based hardware and software 
     ├── vip                     # Caravel Verification IP
     └── vivido                  # Generate Hardware throuth Xilinx Vivado
 
-
+# Structure
 ## System Overview
 ![System Overview](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/%E6%BC%94%E7%AE%97%E6%B3%95%E6%9E%B6%E6%A7%8B.png)
 
 ## FIR
+- FIR Block Diagram
 ![FIR](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/FIR_structure.drawio.png)
 
 ## MM
+- FIR Block Diagram
 ![MM](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/MM_structure.drawio.png)
 
 ## QS
+- FIR Block Diagram
 ![QS](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/QS_structure%20.drawio.png)
 
+# Result
 ## Quality of Service (QOS)
 ![QOS](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/QoS.png)
 
