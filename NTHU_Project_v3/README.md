@@ -26,6 +26,8 @@ comparing the results with the baseline firmware execution.
 Caravel SoC is a platform for developing RISC-V CPU based hardware and software referred from [Efabless Caravel “harness” SoC](https://caravel-harness.readthedocs.io/en/latest/#efabless-caravel-harness-soc). You can develop and integrate custom design into this platform, then vefify their functionality with open source toolchain.  
 ![Caravel SoC](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/Caravel%20SoC.png)
 
+## Caravel SoC FPGA Development Environment
+![Caravel SoC FPGA Development Environment](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/Caravel%20SoC%20FPGA%20Development%20Environment.png)
 
 # Toolchain and Prerequisites
 - Environment: Ubuntu 20.04
@@ -59,9 +61,6 @@ Caravel SoC is a platform for developing RISC-V CPU based hardware and software 
 
 ## QS
 ![QS](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/QS_structure%20.drawio.png)
-
-## Caravel SoC FPGA Development Environment
-![Caravel SoC FPGA Development Environment](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/Caravel%20SoC%20FPGA%20Development%20Environment.png)
 
 ## Quality of Service (QOS)
 ![QOS](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/QoS.png)
