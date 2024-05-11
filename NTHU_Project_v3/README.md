@@ -56,7 +56,7 @@ Caravel SoC is a platform for developing RISC-V CPU based hardware and software 
 - Data Size：32bits
 - Tap_Num : 11
 - Data_Num :Based on Data File 
-- FIR Block Diagram
+### FIR Block Diagram
 ![FIR](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/FIR_structure.drawio.png)
 
 ## MM
@@ -64,7 +64,7 @@ Caravel SoC is a platform for developing RISC-V CPU based hardware and software 
 - Data Size：32bits
 - Tap_Num : N/A
 - Data_Num : 4X4 + 4X4
-- MM Block Diagram  
+### MM Block Diagram  
 ![MM](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/MM_structure.drawio.png)
 
 ## QS
@@ -72,7 +72,7 @@ Caravel SoC is a platform for developing RISC-V CPU based hardware and software 
 - Data Size：32bits
 - Tap_Num : N/A
 - Data_Num : 10 
-- QS Block Diagram  
+### QS Block Diagram  
 ![QS](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/QS_structure%20.drawio.png)
 
 # Result
