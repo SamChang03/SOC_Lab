@@ -1,6 +1,6 @@
 # Workload Optimized SoC Design
 
-# Contributers
+## Contributers
 ### Project Advisor:  
 - 賴瑾（Jiin Lai）
 ### Students:
