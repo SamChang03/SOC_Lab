@@ -19,7 +19,8 @@ comparing the results with the baseline firmware execution.
 - 賴瑾（Jiin Lai）
 ### Students:
 - [張育碩](https://github.com/SamChang03)
-# Caravel SoC
+
+## Caravel SoC
 Caravel SoC is a platform for developing RISC-V CPU based hardware and software referred from [Efabless Caravel “harness” SoC](https://caravel-harness.readthedocs.io/en/latest/#efabless-caravel-harness-soc). You can develop and integrate custom design into this platform, then vefify their functionality with open source toolchain.  
 ![Caravel SoC](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/Caravel%20SoC.png)
 
@@ -64,3 +65,17 @@ Caravel SoC is a platform for developing RISC-V CPU based hardware and software 
 
 ## Utilization Table
 ![Utilization Table](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/Utilization%20Table.png)
+
+## Conclusion
+In this project, we have achieved success in implementing
+three workloads using hardware acceleration. Additionally, we
+have integrated DMA units, a SDRAM arbiter, and SDRAM
+prefetch mechanisms to optimize our circuit.  
+Comparing the results from the RISC-V firmware, we have
+improved the cycles from 500 to 1000 times with a utilization
+increment of less than 100%.  
+However, we still cannot fully optimize our workloads. Our
+future work will keep improving the hardware algorithms, whose
+bottle neck is FIR. Besides, we aim to enhance our understanding
+of each bus protocol and devise more efficient FSMs to alleviate
+all stall cycles to achieve a fully optimized design.
