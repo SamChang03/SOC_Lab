@@ -19,7 +19,7 @@ comparing the results with the baseline firmware execution.
 - 賴瑾（Jiin Lai）
 ### Students:
 - [張育碩](https://github.com/SamChang03)
-- 
+
 # Toolchain and Prerequisites
 - Environment: Ubuntu 20.04
 - Applications: Xilinx Vitis 2022.1 (Vitis_HLS / Vivado), GTKWave v3.3.103
@@ -55,7 +55,8 @@ Caravel SoC is a platform for developing RISC-V CPU based hardware and software 
 - Function： y[t] = Σ(h[i] * x[t - i])
 - Data Size：32bits
 - Tap_Num : 11
-- Data_Num :Based on Data File 
+- Data_Num :Based on Data File
+- Reference code： [FIR code](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v3/rtl/user/fir.v)
 ### FIR Block Diagram
 ![FIR](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/FIR_structure.drawio.png)
 
@@ -64,6 +65,7 @@ Caravel SoC is a platform for developing RISC-V CPU based hardware and software 
 - Data Size：32bits
 - Tap_Num : N/A
 - Data_Num : 4X4 + 4X4
+- Reference code： [MM code](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v3/rtl/user/mm.v)
 ### MM Block Diagram  
 ![MM](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/MM_structure.drawio.png)
 
@@ -71,7 +73,8 @@ Caravel SoC is a platform for developing RISC-V CPU based hardware and software 
 - Function： Sorting
 - Data Size：32bits
 - Tap_Num : N/A
-- Data_Num : 10 
+- Data_Num : 10
+- Reference code： [QS code](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v3/rtl/user/qsort.v)
 ### QS Block Diagram  
 ![QS](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/QS_structure%20.drawio.png)
 
