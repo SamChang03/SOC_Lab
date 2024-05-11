@@ -52,14 +52,26 @@ Caravel SoC is a platform for developing RISC-V CPU based hardware and software 
 ![System Overview](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/%E6%BC%94%E7%AE%97%E6%B3%95%E6%9E%B6%E6%A7%8B.png)
 
 ## FIR
-- FIR Block Diagram  
+- Function： y[t] = Σ(h[i] * x[t - i])
+- Data Size：32bits
+- Tap_Num : 11
+- Data_Num :Based on Data File 
+- FIR Block Diagram
 ![FIR](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/FIR_structure.drawio.png)
 
 ## MM
+- Function： Matrix-Matrix Multiplication
+- Data Size：32bits
+- Tap_Num : N/A
+- Data_Num : 4X4 + 4X4
 - MM Block Diagram  
 ![MM](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/MM_structure.drawio.png)
 
 ## QS
+- Function： Sorting
+- Data Size：32bits
+- Tap_Num : N/A
+- Data_Num : 10 
 - QS Block Diagram  
 ![QS](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/QS_structure%20.drawio.png)
 
