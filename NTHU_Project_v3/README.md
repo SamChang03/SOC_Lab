@@ -60,6 +60,9 @@ Caravel SoC is a platform for developing RISC-V CPU based hardware and software 
 ## QS
 ![QS](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/QS_structure%20.drawio.png)
 
+## Caravel SoC FPGA Development Environment
+![Caravel SoC FPGA Development Environment](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/Caravel%20SoC%20FPGA%20Development%20Environment.png)
+
 ## Quality of Service (QOS)
 ![QOS](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/QoS.png)
 
