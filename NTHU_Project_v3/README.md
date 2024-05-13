@@ -20,6 +20,9 @@ comparing the results with the baseline firmware execution.
 ### Students:
 - [張育碩](https://github.com/SamChang03)
 
+# Resource
+- [bol-edu/caravel-soc_fpga-lab](https://github.com/bol-edu/caravel-soc_fpga-lab)
+
 # Toolchain and Prerequisites
 - Environment: Ubuntu 20.04
 - Applications: Xilinx Vitis 2022.1 (Vitis_HLS / Vivado), GTKWave v3.3.103
