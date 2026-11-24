@@ -1,4 +1,4 @@
-# Workload Optimized SoC Design
+# Final Project: Workload-Optimized SoC (WLOS)
 SoC (System on Chip) is a complete computer system on a chip, which includes a 
 microprocessor, memory, peripherals, and other necessary components for a specific 
 application. This integration presents numerous advantages, such as compact size, 
@@ -31,10 +31,10 @@ comparing the results with the baseline firmware execution.
 
 ## Caravel SoC
 Caravel SoC is a platform for developing RISC-V CPU based hardware and software referred from [Efabless Caravel “harness” SoC](https://caravel-harness.readthedocs.io/en/latest/#efabless-caravel-harness-soc). You can develop and integrate custom design into this platform, then vefify their functionality with open source toolchain.  
-![Caravel SoC](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/Caravel%20SoC.png)
+![Caravel SoC](figures/Caravel_SoC.png)
 
 ## Caravel SoC FPGA Development Environment
-![Caravel SoC FPGA Development Environment](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/Caravel%20SoC%20FPGA%20Development%20Environment.png)
+![Caravel SoC FPGA Development Environment](figures/Caravel_SoC_FPGA_Dev_Env.png)
 
 ## Directory Structure
     ├── cvc-pdk                 # SKY130 OpenRAM SRAM Model
@@ -48,45 +48,45 @@ Caravel SoC is a platform for developing RISC-V CPU based hardware and software 
     │   ├── counter_wb          # Counter with Wishbone Interface
     │   └── gcd_la              # GCD with Logic Analyzer Interface
     ├── vip                     # Caravel Verification IP
-    └── vivido                  # Generate Hardware throuth Xilinx Vivado
+    └── vivado                  # Vivado build scripts, reports, bitstream and Jupyter notebook
 
 # Hardware Structure
 ## System Overview
-![System Overview](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/%E6%BC%94%E7%AE%97%E6%B3%95%E6%9E%B6%E6%A7%8B.png)
+![System Overview](figures/system_overview.png)
 
 ## FIR
 - Function： y[t] = Σ(h[i] * x[t - i])
 - Data Size：32bits
 - Tap_Num : 11
 - Data_Num :Based on Data File
-- Reference code： [FIR code](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v3/rtl/user/fir.v)
+- Reference code： [FIR code](rtl/user/fir.v)
 ### FIR Block Diagram
-![FIR](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/FIR_structure.drawio.png)
+![FIR](figures/FIR_structure.drawio.png)
 
 ## MM
 - Function： Matrix-Matrix Multiplication
 - Data Size：32bits
 - Tap_Num : N/A
 - Data_Num : 4X4 + 4X4
-- Reference code： [MM code](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v3/rtl/user/mm.v)
+- Reference code： [MM code](rtl/user/mm.v)
 ### MM Block Diagram  
-![MM](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/MM_structure.drawio.png)
+![MM](figures/MM_structure.drawio.png)
 
 ## QS
 - Function： Sorting
 - Data Size：32bits
 - Tap_Num : N/A
 - Data_Num : 10
-- Reference code： [QS code](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v3/rtl/user/qsort.v)
+- Reference code： [QS code](rtl/user/qsort.v)
 ### QS Block Diagram  
-![QS](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/QS_structure%20.drawio.png)
+![QS](figures/QS_structure.drawio.png)
 
 # Result
 ## Quality of Service (QOS)
-![QOS](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/QoS.png)
+![QOS](figures/QoS.png)
 
 ## Utilization Table
-![Utilization Table](https://github.com/SamChang03/SOC_Lab/blob/main/NTHU_Project_v2/Utilization%20Table.png)
+![Utilization Table](figures/Utilization_Table.png)
 
 ## Conclusion
 In this project, we have achieved success in implementing
